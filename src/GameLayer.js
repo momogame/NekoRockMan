@@ -10,37 +10,52 @@ var GameLayer = cc.LayerColor.extend({
 
 
         //Create floor
-        /*this.floor = new Floor();
+        /* this.floor = new Floor();
         this.floor.setAnchorPoint( cc.p( 0, 0 ) );
         this.floor.setPosition( new cc.Point( 0, 0) );
-        this.addChild(this.floor);*/
+        this.addChild(this.floor); */
 
         this.createFloors();
 
 
 
         //Create Neko character
-        this.Neko = new Neko( 800/2, 128);
+        this.Neko = new Neko( 800/2, /*128*/ 300);
         //this.Neko.setPosition( new cc.Point( 800/2, 128 ) );
         this.addChild(this.Neko);
 
+      // this.Neko.onFloorHandler(this.floor);
+ 
 
         this.setKeyboardEnabled( true );
 
         this.Neko.scheduleUpdate();
+        this.scheduleUpdate();
 
         return true;
     },
 
-    createFloors: function() {
+    update: function() {
+        this.isOnFloor();
+    },
+
+
+    createFloors : function() {
         this.floors = [];
         var groundFloor = new Floor( 0, 0, 1600, 104 );
+        //console.log('A ' + groundFloor.getTopY() );
         this.floors.push( groundFloor );
 
 
         this.floors.forEach( function( b ) {
             this.addChild( b );
         }, this );
+    },
+
+    isOnFloor: function() {
+        for ( var i = 0; i < this.floors.length; i++ ){
+            this.Neko.onFloorHandler(this.floors[i]);
+        }
     },
 
      onKeyDown: function(e){
