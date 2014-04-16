@@ -6,139 +6,176 @@ var Neko = cc.Sprite.extend({
         this.x = x;
         this.y = y;
 
-        this.maxVx = 3;
-
+        this.maxVx = 5;
         this.accX = 0.25;
 
-        this.jumpV = 18;
-        this.g = -1;
+        this.jumpV = 12;
+        this.g = -0.5;
         
         this.vx = 0;
         this.vy = 0;
 
-        this.xDirection = 0;
-
-        this.onFloor = false;
-        this.floor = null;
-
-        //this.moveLeft = false;
-        //this.moveRight = false;
+        this.moveLeft = false;
+        this.moveRight = false;
         this.jump = false;
+
+        this.ground = null;
+
+        this.blocks = [];
+
+        this.updateSpritePosition();
         
     },
 
-    update: function( dt ) {
-
-        var oldRect = this.getBoundingBoxToWorld();
-        var oldX = this.x;
-        var oldY = this.y;
-
-         this.updateXMovement();
-         this.updateYMovement();
-
-        var dX = this.x - oldX;
-        var dY = this.y - oldY;
-       
-        /*if( this.y <= 128){ //When Neko touch the ground which is at y-axis 128
-            this.vy = 0;
-            this.y = 128;
-        }
-        else
-            this.vy += this.g; */
-
-         this.updatePosition();
-       
-    },
-
-    //Stole from A.
-    updatePosition: function() {
-
-
-
+    updateSpritePosition: function() {
         this.setPosition( cc.p( Math.round( this.x ),
                                 Math.round( this.y ) ) );
     },
 
-     updateXMovement: function() {
-        this.accelerateX();
+    getPlayerRect: function() {
+        var spriteRect = this.getBoundingBoxToWorld();
+        var spritePos = this.getPosition();
+
+        var dX = this.x - spritePos.x;
+        var dY = this.y - spritePos.y;
+        return cc.rect( spriteRect.x + dX,
+                        spriteRect.y + dY,
+                        spriteRect.width,
+                        spriteRect.height );
+    },
+    
+    update: function() {
+        var currentPositionRect = this.getPlayerRect();
+
+        this.updateYMovement();
+        this.updateXMovement();
+
+        var newPositionRect = this.getPlayerRect();
+        this.handleCollision( currentPositionRect,
+                              newPositionRect );
+
+        this.updateSpritePosition();
+    },
+
+    updateXMovement: function() {
+        if ( this.ground ) {
+            if ( ( !this.moveLeft ) && ( !this.moveRight ) ) {
+                this.vx = 0;
+            } else if ( this.moveRight ) {
+                this.accelerateX( 1 );
+            } else {
+                this.accelerateX( -1 );
+            }
+        }
         this.x += this.vx;
+        this.checkOutOfScreen();      
+    },
+
+    checkOutOfScreen: function() {
+
+        if( this.x < 0 + 20 ) {
+            this.x = 0 + 20 ;
+        }
+       // if( this.x > 1600 - 20 ) {
+         //   this.x = 1600 - 20;
+        //}
+
     },
 
     updateYMovement: function() {
-        var oldPos = this.getBoundingBoxToWorld();
-
-        if( this.onFloor ){
+        if ( this.ground ) {
             this.vy = 0;
-
             if ( this.jump ) {
                 this.vy = this.jumpV;
-                this.y += this.vy;
-                this.floor = null;
+                this.y = this.ground.getTopY() + 25  + this.vy;
+                this.ground = null;
             }
-
-        } else { //No jump          
-            this.vy += this.g; 
-
-            if( (this.y + this.vy) < 128 ) { //Check if the next fall will pass the floor or not
-                this.y = 128;
-            } else
-                  this.y += this.vy;
-        } 
+        } else {
+            this.vy += this.g;
+            this.y += this.vy;
+        }
     },
 
-    accelerateX: function() {     
-        this.vx += this.xDirection * this.accX;  
-        if ( Math.abs( this.vx ) > this.maxVx ) {
-            this.vx = this.xDirection * this.maxVx;
-        }
-        
+    isSameDirection: function( dir ) {
+        return ( ( ( this.vx >=0 ) && ( dir >= 0 ) ) ||
+                 ( ( this.vx <= 0 ) && ( dir <= 0 ) ) );
     },
 
-    onFloorHandler: function( floors ) {
-        var oldPos = this.getBoundingBoxToWorld();
-        var topFloor = floors.getTopY();
-
-        if( ( oldPos.y <= topFloor ) && floors.onTop( oldPos ) ) {
-            this.onFloor = true;
-            this.floor = floors; 
+    accelerateX: function( dir ) {
+        if ( this.isSameDirection( dir ) ) {
+            this.vx += dir * this.accX;
+            if ( Math.abs( this.vx ) > this.maxVx ) {
+                this.vx = dir * this.maxVx;
+            }
+        } else {
+            this.vx = dir * this.accX;
         }
-        else { 
-            this.onFloor = false;
-            this.floor = null;
-        }
-
     },
 
-
-    handleKeyDown: function( e ) {
-         if(  e == 65  ) { //LEFT press A
-            this.xDirection = -1; //Walk Left
+    handleCollision: function( oldRect, newRect ) {
+        if ( this.ground ) { // is on the Ground
+            if ( !this.ground.onTop( newRect ) ) {
+                this.ground = null;
+            }
+        } else {
+            if ( this.vy <= 0 ) {
+                var topBlock = this.findTopBlock( this.blocks,
+                                                  oldRect,
+                                                  newRect );
+                
+                if ( topBlock ) {
+                    this.ground = topBlock;
+                    this.y = topBlock.getTopY() + 25;
+                    this.vy = 0;
+                }
+            }
         }
-         if( e == 68 ) { //RIGHT press D
-            this.xDirection = 1; //Walk Right
-        }
-         if( e == 87 ) { // press W
+    },
     
-            if(this.onFloor) {
-                this.jump = true;
-                this.vy = this.jumpV;
+    findTopBlock: function( blocks, oldRect, newRect ) {
+        var topBlock = null;
+        var topBlockY = -1;
+        
+        blocks.forEach( function( b ) {
+            if ( b.hitTop( oldRect, newRect ) && ( b.getTopY() > topBlockY )) {
+                topBlockY = b.getTopY();
+                topBlock = b;
             }
+        }, this );
+        
+        return topBlock;
+    },
+    
+    handleKeyDown: function( e ) {
+        if ( Neko.KEYMAP[ e ] != undefined ) {
+            this[ Neko.KEYMAP[ e ] ] = true;
         }
     },
 
     handleKeyUp: function( e ) {
+        if ( Neko.KEYMAP[ e ] != undefined ) {
+            this[ Neko.KEYMAP[ e ] ] = false;
+        }
+        if(this.vy > 0) { 
+             this.vy = 0;
+        }
+    },
 
-        if( e == 65 || e == 68) { //To check if the key up is move left and move right key
-            this.xDirection = 0;
-            this.vx = 0;
-        }
-        if( e == 87 ) { 
-            this.jump = false;        
-            if(this.vy > 0) {         
-                this.vy = 0;
-            }
-        }
+    setBlocks: function( blocks ) {
+        this.blocks = blocks;
+    },
+
+    getVx: function() {
+        return this.vx;
+    },
+
+    getName: function() {
+        console.log('FCK');
     }
-    
-        
 });
+
+Neko.KEYMAP = {}
+Neko.KEYMAP[cc.KEY.left] = 'moveLeft';
+Neko.KEYMAP[cc.KEY.right] = 'moveRight';
+Neko.KEYMAP[cc.KEY.up] = 'jump';
+        

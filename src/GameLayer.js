@@ -4,9 +4,18 @@ var GameLayer = cc.LayerColor.extend({
         this.setPosition( new cc.Point( 0, 0 ) );
 
         //Create Background
-        this.newBG = new newBG();
-        this.newBG.setPosition( new cc.Point( 800/2, 600/2 ) );
+        this.newBG = new newBG( 800, 600/2 );
         this.addChild(this.newBG);
+
+        this.createBlocks();
+
+        //Create Neko character
+        this.Neko = new Neko( 200/2, /*128*/ 600);
+        this.Neko.setBlocks( this.blocks );
+        this.addChild(this.Neko);
+
+
+        //this.newBG.setPlayer(this.Neko);
 
 
         //Create floor
@@ -15,56 +24,55 @@ var GameLayer = cc.LayerColor.extend({
         this.floor.setPosition( new cc.Point( 0, 0) );
         this.addChild(this.floor); */
 
-        this.createFloors();
-
-
-
-        //Create Neko character
-        this.Neko = new Neko( 800/2, /*128*/ 300);
-        //this.Neko.setPosition( new cc.Point( 800/2, 128 ) );
-        this.addChild(this.Neko);
-
-      // this.Neko.onFloorHandler(this.floor);
- 
 
         this.setKeyboardEnabled( true );
 
+        this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
+
         this.scheduleUpdate();
 
         return true;
     },
 
-    update: function() {
-        this.isOnFloor();
+
+    update: function(){
+        //this.setPosition( cc.p( this.character.x  , this.y ) );
+        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 3000, 600));
+        this.runAction(followPlayer);
     },
 
 
-    createFloors : function() {
-        this.floors = [];
-        var groundFloor = new Floor( 0, 0, 1600, 104 );
-        //console.log('A ' + groundFloor.getTopY() );
-        this.floors.push( groundFloor );
+
+    createBlocks : function() {
+        this.blocks = [];
+        var groundBlock1 = new Block( 0, 0, 600, 104 ); // This is a floor
+        this.blocks.push( groundBlock1 );
+
+        var groundBlock2 = new Block( 700, 0, 2000, 104);
+        this.blocks.push( groundBlock2 );
+
+        //Except for floor, each block should have a high of 50 
+        var middleBlock = new Block( 0, 200, 400, 250 );
+        this.blocks.push( middleBlock );
+
+        var topBlock = new Block( 600, 400, 800, 450 );
+        this.blocks.push( topBlock );
+
+        var firstBlock = new Block( 200, 300, 400, 350 );
+        this.blocks.push( firstBlock );
 
 
-        this.floors.forEach( function( b ) {
+        this.blocks.forEach( function( b ) {
             this.addChild( b );
         }, this );
     },
 
-    isOnFloor: function() {
-        for ( var i = 0; i < this.floors.length; i++ ){
-            this.Neko.onFloorHandler(this.floors[i]);
-        }
-    },
-
      onKeyDown: function(e){
-        //console.log( 'Down: ' + e );
         this.Neko.handleKeyDown( e );
      },
 
      onKeyUp: function( e ){
-        //console.log( 'Up: ' + e );
         this.Neko.handleKeyUp( e );
      }
 
