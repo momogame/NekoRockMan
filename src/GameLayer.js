@@ -38,7 +38,7 @@ var GameLayer = cc.LayerColor.extend({
 
     update: function(){
         //this.setPosition( cc.p( this.character.x  , this.y ) );
-        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 3000, 600));
+        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
         this.runAction(followPlayer);
     },
 

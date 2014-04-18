@@ -76,9 +76,9 @@ var Neko = cc.Sprite.extend({
         if( this.x < 0 + 20 ) {
             this.x = 0 + 20 ;
         }
-       // if( this.x > 1600 - 20 ) {
-         //   this.x = 1600 - 20;
-        //}
+        if( this.x > 1600 - 20 ) {
+            this.x = 1600 - 20;
+        }
 
     },
 
