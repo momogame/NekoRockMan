@@ -18,14 +18,17 @@ var Neko = cc.Sprite.extend({
         this.moveLeft = false;
         this.moveRight = false;
         this.jump = false;
+        this.shoot = false;
 
         this.ground = null;
 
-        this.blocks = [];
+        this.floors = [];
 
         this.updateSpritePosition();
         
     },
+
+    ////PHYSIC ENGINE ///////////////////////////////////////////////////////
 
     updateSpritePosition: function() {
         this.setPosition( cc.p( Math.round( this.x ),
@@ -55,6 +58,8 @@ var Neko = cc.Sprite.extend({
                               newPositionRect );
 
         this.updateSpritePosition();
+
+        this.updateShooting();
     },
 
     updateXMovement: function() {
@@ -119,32 +124,37 @@ var Neko = cc.Sprite.extend({
             }
         } else {
             if ( this.vy <= 0 ) {
-                var topBlock = this.findTopBlock( this.blocks,
+                var topFloor = this.findTopFloor( this.floors,
                                                   oldRect,
                                                   newRect );
                 
-                if ( topBlock ) {
-                    this.ground = topBlock;
-                    this.y = topBlock.getTopY() + 25;
+                if ( topFloor ) {
+                    this.ground = topFloor;
+                    this.y = topFloor.getTopY() + 25;
                     this.vy = 0;
                 }
             }
         }
     },
     
-    findTopBlock: function( blocks, oldRect, newRect ) {
-        var topBlock = null;
-        var topBlockY = -1;
+    findTopFloor: function( floors, oldRect, newRect ) {
+        var topFloor = null;
+        var topFloorY = -1;
         
-        blocks.forEach( function( b ) {
-            if ( b.hitTop( oldRect, newRect ) && ( b.getTopY() > topBlockY )) {
-                topBlockY = b.getTopY();
-                topBlock = b;
+        floors.forEach( function( b ) {
+            if ( b.hitTop( oldRect, newRect ) && ( b.getTopY() > topFloorY )) {
+                topFloorY = b.getTopY();
+                topFloor = b;
             }
         }, this );
         
-        return topBlock;
+        return topFloor;
     },
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+
     
     handleKeyDown: function( e ) {
         if ( Neko.KEYMAP[ e ] != undefined ) {
@@ -161,21 +171,35 @@ var Neko = cc.Sprite.extend({
         }
     },
 
-    setBlocks: function( blocks ) {
-        this.blocks = blocks;
+    setFloors: function( floors ) {
+        this.floors = floors;
     },
 
     getVx: function() {
         return this.vx;
     },
 
-    getName: function() {
-        console.log('FCK');
-    }
+
+    updateShooting: function() {
+        if(this.shoot) {
+            this.bullet = new Bullet();
+
+            var charPos = this.getPosition();
+
+            this.bullet.setPosition(0,0);
+            this.addChild(this.bullet);
+            
+        }
+    },
+
+
+
+
 });
 
 Neko.KEYMAP = {}
-Neko.KEYMAP[cc.KEY.left] = 'moveLeft';
-Neko.KEYMAP[cc.KEY.right] = 'moveRight';
-Neko.KEYMAP[cc.KEY.up] = 'jump';
+Neko.KEYMAP[cc.KEY.a] = 'moveLeft';
+Neko.KEYMAP[cc.KEY.d] = 'moveRight';
+Neko.KEYMAP[cc.KEY.w] = 'jump';
+Neko.KEYMAP[cc.KEY.space] = 'shoot';
         

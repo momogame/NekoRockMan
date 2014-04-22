@@ -15,7 +15,8 @@
             'src/GameLayer.js',
             'src/newBG.js',
             'src/Neko.js',
-            'src/Floor.js'    //add your own files in order here
+            'src/Floor.js',
+            'src/Bullet.js',    //add your own files in order here
         ]
     };
 

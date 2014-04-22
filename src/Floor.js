@@ -1,4 +1,4 @@
-var Block = cc.Sprite.extend({
+var Floor = cc.Sprite.extend({
     ctor: function( x1, y1, x2, y2 ) {
         this._super();
         this.initWithFile( 'images/NFloor.jpg', // 1600 x 400

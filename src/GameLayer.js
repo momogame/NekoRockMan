@@ -7,11 +7,11 @@ var GameLayer = cc.LayerColor.extend({
         this.newBG = new newBG( 800, 600/2 );
         this.addChild(this.newBG);
 
-        this.createBlocks();
+        this.createFloors();
 
         //Create Neko character
         this.Neko = new Neko( 200/2, /*128*/ 600);
-        this.Neko.setBlocks( this.blocks );
+        this.Neko.setFloors( this.floors );
         this.addChild(this.Neko);
 
 
@@ -32,38 +32,41 @@ var GameLayer = cc.LayerColor.extend({
 
         this.scheduleUpdate();
 
+        //Screen follow character
+        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
+        this.runAction(followPlayer);
+
         return true;
     },
 
 
     update: function(){
         //this.setPosition( cc.p( this.character.x  , this.y ) );
-        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
-        this.runAction(followPlayer);
+
     },
 
 
 
-    createBlocks : function() {
-        this.blocks = [];
-        var groundBlock1 = new Block( 0, 0, 600, 104 ); // This is a floor
-        this.blocks.push( groundBlock1 );
+    createFloors : function() {
+        this.floors = [];
+        var groundFloor1 = new Floor( 0, 0, 600, 104 ); // This is a floor
+        this.floors.push( groundFloor1 );
 
-        var groundBlock2 = new Block( 700, 0, 2000, 104);
-        this.blocks.push( groundBlock2 );
+        var groundFloor2 = new Floor( 700, 0, 2000, 104);
+        this.floors.push( groundFloor2 );
 
-        //Except for floor, each block should have a high of 50 
-        var middleBlock = new Block( 0, 200, 400, 250 );
-        this.blocks.push( middleBlock );
+        //Except for floor, each floor should have a high of 50 
+        var middleFloor = new Floor( 0, 200, 400, 250 );
+        this.floors.push( middleFloor );
 
-        var topBlock = new Block( 600, 400, 800, 450 );
-        this.blocks.push( topBlock );
+        var topFloor = new Floor( 600, 400, 800, 450 );
+        this.floors.push( topFloor );
 
-        var firstBlock = new Block( 200, 300, 400, 350 );
-        this.blocks.push( firstBlock );
+        var firstFloor = new Floor( 200, 300, 400, 350 );
+        this.floors.push( firstFloor );
 
 
-        this.blocks.forEach( function( b ) {
+        this.floors.forEach( function( b ) {
             this.addChild( b );
         }, this );
     },
