@@ -2,6 +2,7 @@ var Neko = cc.Sprite.extend({
     ctor: function( x , y) {
         this._super();
         this.initWithFile( 'images/nekoR_v3.gif' );
+        
 
         this.x = x;
         this.y = y;
@@ -47,6 +48,9 @@ var Neko = cc.Sprite.extend({
     },
     
     update: function() {
+
+        this.flippedDirection();
+
         var currentPositionRect = this.getPlayerRect();
 
         this.updateYMovement();
@@ -149,6 +153,15 @@ var Neko = cc.Sprite.extend({
         return topFloor;
     },
 
+    flippedDirection: function() {
+        if( this.moveLeft ) {
+            this.setFlippedX(true);
+        }
+        if( this.moveRight ) {
+            this.setFlippedX(false);
+        }
+    },
+
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -181,19 +194,8 @@ var Neko = cc.Sprite.extend({
         return this.vx;
     },
 
-
-    shoot: function() {
-        if(this.shoot) {
-            this.bullet = new Bullet();
-
-            var charPos = this.getPosition();
-
-            this.bullet.setPosition(100,100);
-            this.addChild(this.bullet);
-
-            this.bullet.scheduleUpdate();
-            
-        }
+    getFlipped: function() {
+        return this.isFlippedX();      
     },
 
 

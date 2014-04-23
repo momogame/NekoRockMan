@@ -71,12 +71,9 @@ var GameLayer = cc.LayerColor.extend({
         }, this );
     },
 
-     onKeyDown: function(e){
-        this.Neko.handleKeyDown( e );
-
+    bulletHandleKeyDown: function(e) {
         if( e == cc.KEY.space) {
-            this.bullet = new Bullet();
-
+            this.bullet = new Bullet( this.Neko.getFlipped() );
             var charPos = this.Neko.getPosition();
 
             this.bullet.setPosition(charPos.x,charPos.y);
@@ -84,6 +81,11 @@ var GameLayer = cc.LayerColor.extend({
 
             this.bullet.scheduleUpdate();
         }
+    },
+
+     onKeyDown: function(e){
+        this.Neko.handleKeyDown( e );
+        this.bulletHandleKeyDown( e );
      },
 
      onKeyUp: function( e ){
