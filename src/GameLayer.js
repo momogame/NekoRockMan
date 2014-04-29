@@ -3,38 +3,19 @@ var GameLayer = cc.LayerColor.extend({
         this._super( new cc.Color4B( 127, 127, 127, 255 ) );
         this.setPosition( new cc.Point( 0, 0 ) );
 
-        //Create Background
-        this.newBG = new newBG( 800, 600/2 );
-        this.addChild(this.newBG);
-
+        this.createBackground();
         this.createFloors();
-
-        //Create Neko character
-        this.Neko = new Neko( 200/2, /*128*/ 600);
-        this.Neko.setFloors( this.floors );
-        this.addChild(this.Neko);
-
-
-        //this.newBG.setPlayer(this.Neko);
-
-
-        //Create floor
-        /* this.floor = new Floor();
-        this.floor.setAnchorPoint( cc.p( 0, 0 ) );
-        this.floor.setPosition( new cc.Point( 0, 0) );
-        this.addChild(this.floor); */
-
+        this.createCharacter();
+        this.createEnermy();
 
         this.setKeyboardEnabled( true );
 
         this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
+        this.updateEnermy();
 
         this.scheduleUpdate();
-
-        //Screen follow character
-        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
-        this.runAction(followPlayer);
+        this.followCharacter();
 
         return true;
     },
@@ -45,14 +26,41 @@ var GameLayer = cc.LayerColor.extend({
 
     },
 
+    createBackground: function() {
+        this.newBG = new newBG( 800, 600/2 );
+        this.addChild(this.newBG);
+    },
 
+
+    createCharacter: function() {
+        this.Neko = new Neko( 200/2, /*128*/ 600);
+        this.Neko.setFloors( this.floors );
+        this.addChild(this.Neko);
+    },
+
+    createEnermy: function() { 
+        this.enermies = [];
+        var enermy1 = new Enermy(400,400,this);
+        this.enermies.push( enermy1 );
+
+        this.enermies.forEach( function( b ) {
+            b.setFloors( this.floors );
+            this.addChild( b );
+        }, this );
+    },
+
+    updateEnermy: function() { 
+        this.enermies.forEach( function( b ) {
+            b.scheduleUpdate();
+        }, this );
+    },
 
     createFloors : function() {
         this.floors = [];
         var groundFloor1 = new Floor( 0, 0, 600, 104 ); // This is a floor
         this.floors.push( groundFloor1 );
 
-        var groundFloor2 = new Floor( 700, 0, 2000, 104);
+        var groundFloor2 = new Floor( 1000, 0, 2000, 104);
         this.floors.push( groundFloor2 );
 
         //Except for floor, each floor should have a high of 50 
@@ -62,8 +70,12 @@ var GameLayer = cc.LayerColor.extend({
         var topFloor = new Floor( 600, 400, 800, 450 );
         this.floors.push( topFloor );
 
+        //
         var firstFloor = new Floor( 200, 300, 400, 350 );
         this.floors.push( firstFloor );
+
+        var secondFloor = new Floor( 800, 150, 900, 200);
+        this.floors.push( secondFloor );
 
 
         this.floors.forEach( function( b ) {
@@ -71,16 +83,24 @@ var GameLayer = cc.LayerColor.extend({
         }, this );
     },
 
+    followCharacter: function() {
+        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
+        this.runAction(followPlayer);
+    },
+
     bulletHandleKeyDown: function(e) {
+
         if( e == cc.KEY.space) {
-            this.bullet = new Bullet( this.Neko.getFlipped() );
+            this.bullet = new Bullet( this );
             var charPos = this.Neko.getPosition();
 
             this.bullet.setPosition(charPos.x,charPos.y);
             this.addChild(this.bullet);
 
             this.bullet.scheduleUpdate();
+            GameLayer.shootBulletDelay = 0; 
         }
+
     },
 
      onKeyDown: function(e){
@@ -93,6 +113,7 @@ var GameLayer = cc.LayerColor.extend({
      }
 
 });
+
 
 
 

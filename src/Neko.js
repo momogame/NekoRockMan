@@ -7,7 +7,7 @@ var Neko = cc.Sprite.extend({
         this.x = x;
         this.y = y;
 
-        this.maxVx = 3;
+        this.maxVx = 5;
         this.accX = 0.25;
 
         this.jumpV = 12;
@@ -96,7 +96,7 @@ var Neko = cc.Sprite.extend({
                 this.vy = this.jumpV;
                 this.y = this.ground.getTopY() + 25  + this.vy;
                 this.ground = null;
-            }
+            } 
         } else {
             this.vy += this.g;
             this.y += this.vy;
@@ -172,9 +172,6 @@ var Neko = cc.Sprite.extend({
             this[ Neko.KEYMAP[ e ] ] = true;
         }
 
-        if( e == cc.KEY.space) {
-           // this.shoot();
-        }
     },
 
     handleKeyUp: function( e ) {
@@ -204,8 +201,8 @@ var Neko = cc.Sprite.extend({
 });
 
 Neko.KEYMAP = {}
-Neko.KEYMAP[cc.KEY.a] = 'moveLeft';
-Neko.KEYMAP[cc.KEY.d] = 'moveRight';
-Neko.KEYMAP[cc.KEY.w] = 'jump';
+Neko.KEYMAP[cc.KEY.left] = 'moveLeft';
+Neko.KEYMAP[cc.KEY.right] = 'moveRight';
+Neko.KEYMAP[cc.KEY.up] = 'jump';
 //Neko.KEYMAP[cc.KEY.space] = 'shoot';
         

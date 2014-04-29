@@ -16,7 +16,8 @@
             'src/newBG.js',
             'src/Neko.js',
             'src/Floor.js',
-            'src/Bullet.js',    //add your own files in order here
+            'src/Bullet.js',  
+            'src/Enermy.js',  //add your own files in order here
         ]
     };
 
