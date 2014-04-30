@@ -2,9 +2,11 @@ var Enermy = cc.Sprite.extend({
     ctor: function( x , y, GameLayer) {
         this._super();
         this.initWithFile( 'images/blackBox.gif' );
-        
+
         this.x = x;
         this.y = y;
+
+        this.life = 3;
 
         this.maxVx = 5;
         this.accX = 0.25;
@@ -23,6 +25,8 @@ var Enermy = cc.Sprite.extend({
 
         this.floors = [];
 
+
+        this.gameLayer = GameLayer;
         this.playerPos = GameLayer.Neko.getPosition();
 
     },
@@ -61,7 +65,7 @@ var Enermy = cc.Sprite.extend({
     },
 
     updateXMovement: function() {
-        if ( this.ground ) {console.log('hello');}
+        if ( this.ground ) {}
                
     },
 
@@ -112,6 +116,21 @@ var Enermy = cc.Sprite.extend({
 
     setFloors: function( floors ) {
         this.floors = floors;
+    },
+
+
+    bulletColision: function() {
+        console.log(this.life);
+        if( this.isDie() ) {
+            this.gameLayer.removeChild(this);
+        }
+        else
+            this.life--;
+        
+    },
+
+    isDie: function() {
+        return (this.life == 0);
     },
 
 });

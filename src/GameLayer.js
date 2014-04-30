@@ -103,6 +103,7 @@ var GameLayer = cc.LayerColor.extend({
 
     },
 
+
      onKeyDown: function(e){
         this.Neko.handleKeyDown( e );
         this.bulletHandleKeyDown( e );
