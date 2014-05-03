@@ -8,16 +8,17 @@ var GameLayer = cc.LayerColor.extend({
         this.createEnermy();
         this.createCharacter();
 
-        //this.testEnermy = new Enermy(100,600,this);
-        //this.testEnermy.setFloors( this.floors );
-        //this.addChild( this.testEnermy );
+        this.HPbar = new HPbar(this.Neko,this);
+        this.addChild(this.HPbar);
 
         this.setKeyboardEnabled( true );
 
         this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
-        //this.testEnermy.scheduleUpdate();
+        
         this.updateEnermy();
+
+        this.HPbar.scheduleUpdate();
 
         this.scheduleUpdate();
         this.followCharacter();
@@ -128,7 +129,11 @@ var GameLayer = cc.LayerColor.extend({
 
 });
 
-
+GameLayer.STATES = {
+    FRONT: 1,
+    STARTED: 2,
+    STOP: 3
+};
 
 
 var StartScene = cc.Scene.extend({

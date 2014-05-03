@@ -17,7 +17,8 @@
             'src/Neko.js',
             'src/Floor.js',
             'src/Bullet.js',  
-            'src/Enermy.js',  //add your own files in order here
+            'src/Enermy.js',
+            'src/HPbar.js',  //add your own files in order here
         ]
     };
 

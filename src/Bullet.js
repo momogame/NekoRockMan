@@ -27,7 +27,6 @@ var Bullet = cc.Sprite.extend({
         for( var i = 0; i < this.enermies.length; i++ ) {
             if( this.hit( this.enermies[i] ) ) {
                 var enermyPos = this.enermies[i].getPosition();
-                console.log('Enermy.x = ' + enermyPos.x );
                 this.enermies[i].bulletColision();
                 this.gameLayer.removeChild( this );
             }
