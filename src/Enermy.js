@@ -27,7 +27,7 @@ var Enermy = cc.Sprite.extend({
 
 
         this.gameLayer = GameLayer;
-        this.playerPos = GameLayer.Neko.getPosition();
+        
 
     },
 
@@ -120,12 +120,14 @@ var Enermy = cc.Sprite.extend({
 
 
     bulletColision: function() {
-        console.log(this.life);
+        
         if( this.isDie() ) {
-            this.gameLayer.removeChild(this);
+           // this.array.splice(i, 1);
+            this.gameLayer.removeChild( this );
+            this.setPosition(0,0); //Hide this enermy
         }
         else
-            this.life--;
+            --this.life;
         
     },
 

@@ -5,13 +5,18 @@ var GameLayer = cc.LayerColor.extend({
 
         this.createBackground();
         this.createFloors();
-        this.createCharacter();
         this.createEnermy();
+        this.createCharacter();
+
+        //this.testEnermy = new Enermy(100,600,this);
+        //this.testEnermy.setFloors( this.floors );
+        //this.addChild( this.testEnermy );
 
         this.setKeyboardEnabled( true );
 
         this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
+        //this.testEnermy.scheduleUpdate();
         this.updateEnermy();
 
         this.scheduleUpdate();
@@ -22,7 +27,7 @@ var GameLayer = cc.LayerColor.extend({
 
 
     update: function(){
-        //this.setPosition( cc.p( this.character.x  , this.y ) );
+       // this.bullet.updateGameLayer( this );
 
     },
 
@@ -35,13 +40,17 @@ var GameLayer = cc.LayerColor.extend({
     createCharacter: function() {
         this.Neko = new Neko( 200/2, /*128*/ 600);
         this.Neko.setFloors( this.floors );
+        this.Neko.setEnermies( this.enermies );
         this.addChild(this.Neko);
     },
 
     createEnermy: function() { 
         this.enermies = [];
-        var enermy1 = new Enermy(400,400,this);
+        var enermy1 = new Enermy(300,400,this);
         this.enermies.push( enermy1 );
+
+        var enermy2 = new Enermy(650,600,this);
+        this.enermies.push( enermy2 );
 
         this.enermies.forEach( function( b ) {
             b.setFloors( this.floors );
@@ -98,9 +107,13 @@ var GameLayer = cc.LayerColor.extend({
             this.addChild(this.bullet);
 
             this.bullet.scheduleUpdate();
-            GameLayer.shootBulletDelay = 0; 
         }
 
+    },
+
+    removeSprite: function( sprite ) {
+        this.removeChild( sprite );
+        this.enermies.shift();
     },
 
 

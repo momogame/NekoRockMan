@@ -23,6 +23,9 @@ var Neko = cc.Sprite.extend({
         this.ground = null;
 
         this.floors = [];
+        this.enermies = [];
+
+
 
         this.updateSpritePosition();
         
@@ -31,6 +34,13 @@ var Neko = cc.Sprite.extend({
     ////PHYSIC ENGINE ///////////////////////////////////////////////////////
 
     updateSpritePosition: function() {
+
+       for( var i = 0; i < this.enermies.length; i++ ) {
+            if( this.closeTo( this.enermies[i] ) ) {
+                this.x -= 50;
+            }
+        } 
+
         this.setPosition( cc.p( Math.round( this.x ),
                                 Math.round( this.y ) ) );
     },
@@ -162,6 +172,19 @@ var Neko = cc.Sprite.extend({
         }
     },
 
+    closeTo: function( obj ) {
+        var objPos = obj.getPosition();
+        var pos = this.getPosition();
+
+        return ( Math.abs(pos.x - objPos.x) <= 20 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
+    },
+
+
+    objectCollision: function( obj ) {
+        var posObj = obj.getPosition();
+
+
+    },
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -185,6 +208,10 @@ var Neko = cc.Sprite.extend({
 
     setFloors: function( floors ) {
         this.floors = floors;
+    },
+
+    setEnermies: function( enermies ) {
+        this.enermies = enermies;
     },
 
     getVx: function() {

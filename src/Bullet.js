@@ -26,11 +26,18 @@ var Bullet = cc.Sprite.extend({
 
         for( var i = 0; i < this.enermies.length; i++ ) {
             if( this.hit( this.enermies[i] ) ) {
+                var enermyPos = this.enermies[i].getPosition();
+                console.log('Enermy.x = ' + enermyPos.x );
                 this.enermies[i].bulletColision();
-                this.gameLayer.removeChild(this);
+                this.gameLayer.removeChild( this );
             }
-        }
+        } 
 
+
+    },
+
+    updateGameLayer: function( updatedGameLayer) {
+        this.gameLayer = updatedGameLayer;
     },
 
     bulletDirection: function() {
@@ -44,7 +51,7 @@ var Bullet = cc.Sprite.extend({
     },
 
     bulletIsFar: function( pos ) {
-        return pos.x > this.charPos.x + 900;
+        return (pos.x > this.charPos.x + 900) || (pos.x < this.charPos.x - 900);
     },
 
     hit: function( obj ) {
