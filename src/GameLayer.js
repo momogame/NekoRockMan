@@ -11,7 +11,7 @@ var GameLayer = cc.LayerColor.extend({
         this.setKeyboardEnabled( true );
 
         this.scheduleUpdate();
-        this.followCharacter();
+        
 
         return true;
     },
@@ -21,9 +21,23 @@ var GameLayer = cc.LayerColor.extend({
         this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
         this.updateEnermy();
-        this.HPbar.scheduleUpdate()
-        var pos = this.Neko.getPosition();
-            
+        this.HPbar.scheduleUpdate();
+
+        if( this.Neko.isDie() ) {
+            var delay = cc.DelayTime.create(0.5);
+
+            this.runAction(cc.Sequence.create(
+                delay,
+            cc.CallFunc.create(function () {
+                this.restart();
+            }, this)
+        ));
+           
+        }
+    },
+
+    startGamePlay: function() {
+
     },
 
     createBackground: function() {
@@ -33,7 +47,9 @@ var GameLayer = cc.LayerColor.extend({
 
 
     createCharacter: function() {
-        this.Neko = new Neko( 200/2, /*128*/ 600);
+        this.Neko = new Neko( 200/2, /*128*/ 800);
+        this.startPointX = 200/2;
+        this.startPointY = 800;
 
         this.HPbar = new HPbar(this.Neko);
         this.addChild(this.HPbar);
@@ -42,6 +58,9 @@ var GameLayer = cc.LayerColor.extend({
         this.Neko.setFloors( this.floors );
         this.Neko.setEnermies( this.enermies );
         this.addChild(this.Neko);
+
+        this.followCharacter();
+
     },
 
     createEnermy: function() { 
@@ -122,15 +141,35 @@ var GameLayer = cc.LayerColor.extend({
 
     },
 
+    deleteCharacter: function() {
+        this.removeChild( this);
+    },
+
+    restart: function() {
+        this.Neko.setPosition(this.startPointX,this.startPointY);
+        this.removeChild(this.Neko);
+        this.removeChild(this.HPbar);
+        
+        this.enermies.forEach( function( b ) {
+            b.setFloors( this.floors );
+            this.removeChild( b );
+        }, this );
+
+        this.createCharacter();
+        this.createEnermy();
+        this.followCharacter();
+
+    },
+
 
      onKeyDown: function(e){
         this.Neko.handleKeyDown( e );
         this.bulletHandleKeyDown( e );
-     },
+    },
 
      onKeyUp: function( e ){
         this.Neko.handleKeyUp( e );
-     }
+    }
 
 });
 

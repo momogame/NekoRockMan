@@ -5,8 +5,6 @@ var HPbar = cc.Sprite.extend({
         this.scale = 0.8;
         this. setScale( this.scale );
 
-        //this.hp = new HP();
-        //this.addChild(this.health);
         this.MAX_HEALTH = 15;
         this.MAX_LIFE = 5;
         this.createHealth();
@@ -55,10 +53,15 @@ var HPbar = cc.Sprite.extend({
 
     lostHealth: function() {
         this.removeChild(this.health.pop());
-
         if( this.health.length == 0 ) {
-            this.removeChild(this.life.pop());
+            this.lostLife();
+
+           // this.createHealth();
         }
+    },
+
+    lostLife: function() {
+        this.removeChild(this.life.pop());
     },
 
     gainHealth: function() {

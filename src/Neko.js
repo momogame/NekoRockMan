@@ -3,8 +3,8 @@ var Neko = cc.Sprite.extend({
         this._super();
         this.initWithFile( 'images/nekoR_v3.gif' );
         
-        this.startPointX = x;
-        this.startPointY = y;
+        //this.startPointX = x;
+        //this.startPointY = y;
 
         this.x = x;
         this.y = y;
@@ -202,7 +202,7 @@ var Neko = cc.Sprite.extend({
     },
 
     isDie: function() {
-        return this.hp.getRemainLife() == 0;
+        return ( this.hp.getRemainLife() == 0 ) || this.isFallingDown() ;
     },
 
     isFallingDown: function() {
