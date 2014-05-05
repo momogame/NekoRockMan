@@ -8,17 +8,7 @@ var GameLayer = cc.LayerColor.extend({
         this.createEnermy();
         this.createCharacter();
 
-        this.HPbar = new HPbar(this.Neko,this);
-        this.addChild(this.HPbar);
-
         this.setKeyboardEnabled( true );
-
-        this.newBG.scheduleUpdate();
-        this.Neko.scheduleUpdate();
-        
-        this.updateEnermy();
-
-        this.HPbar.scheduleUpdate();
 
         this.scheduleUpdate();
         this.followCharacter();
@@ -28,8 +18,12 @@ var GameLayer = cc.LayerColor.extend({
 
 
     update: function(){
-       // this.bullet.updateGameLayer( this );
-
+        this.newBG.scheduleUpdate();
+        this.Neko.scheduleUpdate();
+        this.updateEnermy();
+        this.HPbar.scheduleUpdate()
+        var pos = this.Neko.getPosition();
+            
     },
 
     createBackground: function() {
@@ -40,6 +34,11 @@ var GameLayer = cc.LayerColor.extend({
 
     createCharacter: function() {
         this.Neko = new Neko( 200/2, /*128*/ 600);
+
+        this.HPbar = new HPbar(this.Neko);
+        this.addChild(this.HPbar);
+        
+        this.Neko.setHP( this.HPbar );
         this.Neko.setFloors( this.floors );
         this.Neko.setEnermies( this.enermies );
         this.addChild(this.Neko);
@@ -96,6 +95,7 @@ var GameLayer = cc.LayerColor.extend({
     followCharacter: function() {
         var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
         this.runAction(followPlayer);
+
     },
 
     bulletHandleKeyDown: function(e) {
@@ -117,6 +117,11 @@ var GameLayer = cc.LayerColor.extend({
         this.enermies.shift();
     },
 
+    gameOver: function() {
+        this.enermy.unscheduleUpdate();
+
+    },
+
 
      onKeyDown: function(e){
         this.Neko.handleKeyDown( e );
@@ -132,7 +137,7 @@ var GameLayer = cc.LayerColor.extend({
 GameLayer.STATES = {
     FRONT: 1,
     STARTED: 2,
-    STOP: 3
+    END: 3
 };
 
 

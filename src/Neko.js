@@ -1,8 +1,10 @@
 var Neko = cc.Sprite.extend({
-    ctor: function( x , y) {
+    ctor: function( x , y ) {
         this._super();
         this.initWithFile( 'images/nekoR_v3.gif' );
         
+        this.startPointX = x;
+        this.startPointY = y;
 
         this.x = x;
         this.y = y;
@@ -25,6 +27,10 @@ var Neko = cc.Sprite.extend({
         this.floors = [];
         this.enermies = [];
 
+        this.hp = null;
+
+        this.timer = 500;
+
 
 
         this.updateSpritePosition();
@@ -35,11 +41,7 @@ var Neko = cc.Sprite.extend({
 
     updateSpritePosition: function() {
 
-       for( var i = 0; i < this.enermies.length; i++ ) {
-            if( this.closeTo( this.enermies[i] ) ) {
-                this.x -= 50;
-            }
-        } 
+        this.objectCollisionHandler(this.enermies);
 
         this.setPosition( cc.p( Math.round( this.x ),
                                 Math.round( this.y ) ) );
@@ -84,8 +86,15 @@ var Neko = cc.Sprite.extend({
                 this.accelerateX( -1 );
             }
         }
+
+        if( this.isFallingDown() ){
+            this.vx = 0;
+            //this.x = this.startPointX;
+            //this.y = this.startPointY;
+        }    
+
         this.x += this.vx;
-        this.checkOutOfScreen();      
+        this.checkOutOfScreen();  
     },
 
     checkOutOfScreen: function() {
@@ -180,10 +189,30 @@ var Neko = cc.Sprite.extend({
     },
 
 
-    objectCollision: function( obj ) {
-        var posObj = obj.getPosition();
+    objectCollisionHandler: function( obj ) {
+            for( var i = 0; i < obj.length; i++ ) {
+            if( this.closeTo( obj[i] ) ) {
+                if( !this.getFlipped() )
+                    this.x -= 50;
+                else
+                    this.x += 50;
+                this.hp.lostHealth();
+            }
+        } 
+    },
 
+    isDie: function() {
+        return this.hp.getRemainLife() == 0;
+    },
 
+    isFallingDown: function() {
+        return this.y <= -100 ;
+    },
+
+    countDownTimer: function() {
+        if(this.timer > 0) {
+            this.timer--;
+        }
     },
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -212,6 +241,10 @@ var Neko = cc.Sprite.extend({
 
     setEnermies: function( enermies ) {
         this.enermies = enermies;
+    },
+
+    setHP: function( HP ) {
+        this.hp = HP;
     },
 
     getVx: function() {
