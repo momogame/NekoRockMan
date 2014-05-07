@@ -3,6 +3,10 @@ var GameLayer = cc.LayerColor.extend({
         this._super( new cc.Color4B( 127, 127, 127, 255 ) );
         this.setPosition( new cc.Point( 0, 0 ) );
 
+        this.startPoint = [ 100, 800 ];
+        this.endPoint = [ 3200, 600 ]; //Point x should be multiple of 800
+
+
         this.createBackground();
         this.createFloors();
         this.createEnermy();
@@ -18,7 +22,7 @@ var GameLayer = cc.LayerColor.extend({
 
 
     update: function(){
-        this.newBG.scheduleUpdate();
+        //this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
         this.HPbar.scheduleUpdate();
 
@@ -31,8 +35,10 @@ var GameLayer = cc.LayerColor.extend({
                 this.restart();
            // }, this)
        // ));
-           
         }
+
+        var NekoPos = this.Neko.getPosition();
+
     },
 
     startGamePlay: function() {
@@ -40,15 +46,22 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     createBackground: function() {
-        this.newBG = new newBG( 800, 600/2 );
-        this.addChild(this.newBG);
+        this.backGround = [];
+
+        var bg1 = new newBG( 800, 600/2 );
+        this.backGround.push( bg1 );
+
+        var bg2 = new newBG( 2400, 600/2 );
+        this.backGround.push( bg2 );
+
+        this.backGround.forEach( function( b ) {
+            this.addChild( b );
+        }, this );
     },
 
 
     createCharacter: function( life ) {
-        this.Neko = new Neko( 200/2, /*128*/ 800);
-        this.startPointX = 200/2;
-        this.startPointY = 800;
+        this.Neko = new Neko( this.startPoint[0] , this.startPoint[1] );
 
         this.HPbar = new HPbar(this.Neko, life);
         this.addChild(this.HPbar);
@@ -56,6 +69,7 @@ var GameLayer = cc.LayerColor.extend({
         this.Neko.setHP( this.HPbar );
         this.Neko.setFloors( this.floors );
         this.Neko.setEnermies( this.enermies );
+        this.Neko.setEndPoint( this.endPoint[0] );
         this.addChild(this.Neko);
 
         this.followCharacter();
@@ -91,25 +105,29 @@ var GameLayer = cc.LayerColor.extend({
 
     createFloors : function() {
         this.floors = [];
-        var groundFloor1 = new Floor( 0, 0, 600, 104 ); // This is a floor
+        // Ground 
+        var groundFloor1 = new Floor( 0, 0, 600, 104 ); 
         this.floors.push( groundFloor1 );
 
         var groundFloor2 = new Floor( 1000, 0, 2000, 104);
         this.floors.push( groundFloor2 );
 
-        //Except for floor, each floor should have a high of 50 
-        var middleFloor = new Floor( 0, 200, 400, 250 );
-        this.floors.push( middleFloor );
+        // Float 
+        // Float floor should have a high of 50 
+        var floor1 = new Floor( 0, 200, 400, 250 );
+        this.floors.push( floor1 );
 
-        var topFloor = new Floor( 600, 400, 800, 450 );
-        this.floors.push( topFloor );
+        var floor2 = new Floor( 200, 300, 400, 350 );
+        this.floors.push( floor2 );
 
-        //
-        var firstFloor = new Floor( 200, 300, 400, 350 );
-        this.floors.push( firstFloor );
+        var floor3 = new Floor( 600, 400, 800, 450 );
+        this.floors.push( floor3 );
 
-        var secondFloor = new Floor( 800, 150, 900, 200);
-        this.floors.push( secondFloor );
+        var floor4 = new Floor( 800, 150, 900, 200);
+        this.floors.push( floor4 );
+
+        var floor5 = new Floor( 2100, 200, 2300, 250 );
+        this.floors.push( floor5 );
 
 
         this.floors.forEach( function( b ) {
@@ -118,8 +136,8 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     followCharacter: function() {
-        var followPlayer = cc.Follow.create(this.Neko, cc.rect(0, 0, 1600, 600));
-        this.runAction(followPlayer);
+        var followPlayer = cc.Follow.create( this.Neko, cc.rect(0, 0, this.endPoint[0] , this.endPoint[1] ) );
+        this.runAction( followPlayer );
 
     },
 
@@ -139,7 +157,6 @@ var GameLayer = cc.LayerColor.extend({
 
     removeSprite: function( sprite ) {
         this.removeChild( sprite );
-
         this.enermies.shift();
     },
 
@@ -151,12 +168,10 @@ var GameLayer = cc.LayerColor.extend({
     restart: function() {
         var previousLife = this.HPbar.getLife();
 
-        //this.Neko.setPosition(this.startPointX,this.startPointY);
         this.removeChild(this.Neko);
         this.removeChild(this.HPbar);
         
         this.enermies.forEach( function( b ) {
-            //b.setFloors( this.floors );
             this.removeChild( b );
         }, this );
         
@@ -169,6 +184,14 @@ var GameLayer = cc.LayerColor.extend({
 
      onKeyDown: function(e){
         this.Neko.handleKeyDown( e );
+        if( e == cc.KEY.space ){                           
+            var moveNaja = cc.MoveBy.create(1, cc.p(100,0));
+            this.Neko.runAction( moveNaja );
+            
+          if ( moveNaja.isDone() ) {
+                console.log(1);
+          }
+}
         this.bulletHandleKeyDown( e );
     },
 

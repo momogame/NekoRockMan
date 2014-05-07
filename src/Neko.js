@@ -2,9 +2,6 @@ var Neko = cc.Sprite.extend({
     ctor: function( x , y ) {
         this._super();
         this.initWithFile( 'images/nekoR_v3.gif' );
-        
-        //this.startPointX = x;
-        //this.startPointY = y;
 
         this.x = x;
         this.y = y;
@@ -32,7 +29,6 @@ var Neko = cc.Sprite.extend({
         this.timer = 500;
 
 
-
         this.updateSpritePosition();
         
     },
@@ -40,9 +36,6 @@ var Neko = cc.Sprite.extend({
     ////PHYSIC ENGINE ///////////////////////////////////////////////////////
 
     updateSpritePosition: function() {
-
-        //this.objectCollisionHandler(this.enermies);
-
         this.setPosition( cc.p( Math.round( this.x ),
                                 Math.round( this.y ) ) );
     },
@@ -91,8 +84,6 @@ var Neko = cc.Sprite.extend({
 
         if( this.isFallingDown() ){
             this.vx = 0;
-            //this.x = this.startPointX;
-            //this.y = this.startPointY;
         }    
 
         this.x += this.vx;
@@ -104,8 +95,8 @@ var Neko = cc.Sprite.extend({
         if( this.x < 0 + 20 ) {
             this.x = 0 + 20 ;
         }
-        if( this.x > 1600 - 20 ) {
-            this.x = 1600 - 20;
+        if( this.x > this.endPoint - 20 ) {
+            this.x = this.endPoint - 20;
         }
 
     },
@@ -194,11 +185,13 @@ var Neko = cc.Sprite.extend({
     objectCollisionHandler: function( obj ) {
             for( var i = 0; i < obj.length; i++ ) {
             if( this.closeTo( obj[i] ) ) {
-                if( !this.getFlipped() )
-                    this.x -= 50;
+                if( !this.getFlipped() ) {
+                    this.x += -50;                         
+                }
                 else
                     this.x += 50;
-                this.hp.lostHealth();
+                
+               this.hp.lostHealth();
             }
         } 
     },
@@ -250,6 +243,10 @@ var Neko = cc.Sprite.extend({
         this.hp.setLife(life);
     },
 
+    setEndPoint: function( endPoint ) {
+        this.endPoint = endPoint;
+    },
+
     getVx: function() {
         return this.vx;
     },
@@ -267,5 +264,3 @@ Neko.KEYMAP = {}
 Neko.KEYMAP[cc.KEY.left] = 'moveLeft';
 Neko.KEYMAP[cc.KEY.right] = 'moveRight';
 Neko.KEYMAP[cc.KEY.up] = 'jump';
-//Neko.KEYMAP[cc.KEY.space] = 'shoot';
-        

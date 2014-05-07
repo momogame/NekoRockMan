@@ -29,9 +29,9 @@ var HPbar = cc.Sprite.extend({
     },
 
     followCharacter: function() {
-        if( this.character.x >= 400 ) 
+        if( this.character.x >= 400 ) //Before screen start to follow character
             this.x = 50 + (this.character.x - 400);
-        if( this.character.x >= 1200 )
+        if( this.character.x >= this.character.endPoint - 400 ) //Before screen stop to follow character
             this.x = 50 + 800;
     },
 
@@ -55,13 +55,6 @@ var HPbar = cc.Sprite.extend({
 
     lostHealth: function() {
         this.removeChild(this.health.pop());
-       // if( this.health.length == 0 ) {
-      //      this.lostLife();
-      //  }
-    },
-
-    lostLife: function() {
-        this.removeChild(this.lives.pop());
     },
 
     gainHealth: function() {
@@ -73,7 +66,6 @@ var HPbar = cc.Sprite.extend({
     },
 
     getLife: function() {
-        console.log(this.life);
         return this.lives.length;
     },
 

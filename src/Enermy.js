@@ -8,8 +8,8 @@ var Enermy = cc.Sprite.extend({
 
         this.life = 3;
 
-        this.maxVx = 5;
-        this.accX = 0.25;
+        this.maxVx = 2;
+        this.accX = 0.05;
 
         this.jumpV = 12;
         this.g = -0.5;
@@ -17,8 +17,10 @@ var Enermy = cc.Sprite.extend({
         this.vx = 0;
         this.vy = 0;
 
-        this.moveLeft = false;
-        this.moveRight = false;
+        this.randomMove();
+        //this.autoMove();
+        //this.moveLeft = false;
+        //this.moveRight = false;
         this.jump = false;
 
         this.ground = null;
@@ -27,6 +29,8 @@ var Enermy = cc.Sprite.extend({
 
 
         this.gameLayer = GameLayer;
+
+        this.schedule(this.swapDirection,0.75);
         
 
     },
@@ -53,8 +57,11 @@ var Enermy = cc.Sprite.extend({
 
         var currentPositionRect = this.getEnermyRect();
 
+        
         this.updateYMovement();
         this.updateXMovement();
+
+     
 
         var newPositionRect = this.getEnermyRect();
         this.handleCollision( currentPositionRect,
@@ -65,7 +72,20 @@ var Enermy = cc.Sprite.extend({
     },
 
     updateXMovement: function() {
-        if ( this.ground ) {}
+        if ( this.ground ) {
+
+
+
+            if ( ( !this.moveLeft ) && ( !this.moveRight ) ) {
+                this.vx = 0;
+            } else if ( this.moveRight ) {  
+               this.vx = this.maxVx;
+            } else {
+                this.vx = (-1)*this.maxVx;
+            }
+
+            this.x += this.vx;
+        }
                
     },
 
@@ -122,10 +142,8 @@ var Enermy = cc.Sprite.extend({
     bulletColision: function() {
         
         if( this.isDie() ) {
-           // this.array.splice(i, 1);
             this.gameLayer.removeEnermyFromArray();
             this.gameLayer.removeChild( this );
-            this.setPosition(0,0); //Hide this enermy
         }
         else
             --this.life;
@@ -134,6 +152,32 @@ var Enermy = cc.Sprite.extend({
 
     isDie: function() {
         return (this.life == 0);
+    },
+
+
+    randomMove: function() {
+        var random = Math.round(Math.random());
+
+        if( random == 0 ) {
+            this.moveLeft = false;
+            this.moveRight = true;
+        }
+        else {
+            this.moveLeft = true;
+            this.moveRight = false;
+        }
+
+    },
+
+    swapDirection: function() {
+        if( this.moveLeft ) {
+            this.moveLeft = false;
+            this.moveRight = true;
+        }
+        else {
+            this.moveRight = false;
+            this.moveLeft = true;
+        }
     },
 
 });
