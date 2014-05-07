@@ -41,7 +41,7 @@ var Neko = cc.Sprite.extend({
 
     updateSpritePosition: function() {
 
-        this.objectCollisionHandler(this.enermies);
+        //this.objectCollisionHandler(this.enermies);
 
         this.setPosition( cc.p( Math.round( this.x ),
                                 Math.round( this.y ) ) );
@@ -64,6 +64,8 @@ var Neko = cc.Sprite.extend({
         this.flippedDirection();
 
         var currentPositionRect = this.getPlayerRect();
+
+        this.objectCollisionHandler(this.enermies);
 
         this.updateYMovement();
         this.updateXMovement();
@@ -185,7 +187,7 @@ var Neko = cc.Sprite.extend({
         var objPos = obj.getPosition();
         var pos = this.getPosition();
 
-        return ( Math.abs(pos.x - objPos.x) <= 20 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
+        return ( Math.abs(pos.x - objPos.x) <= 30 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
     },
 
 
@@ -202,7 +204,7 @@ var Neko = cc.Sprite.extend({
     },
 
     isDie: function() {
-        return ( this.hp.getRemainLife() == 0 ) || this.isFallingDown() ;
+        return ( this.hp.getRemainHealth() == 0 ) || this.isFallingDown() ;
     },
 
     isFallingDown: function() {
@@ -243,8 +245,9 @@ var Neko = cc.Sprite.extend({
         this.enermies = enermies;
     },
 
-    setHP: function( HP ) {
+    setHP: function( HP,life ) {
         this.hp = HP;
+        this.hp.setLife(life);
     },
 
     getVx: function() {

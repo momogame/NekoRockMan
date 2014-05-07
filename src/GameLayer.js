@@ -6,7 +6,7 @@ var GameLayer = cc.LayerColor.extend({
         this.createBackground();
         this.createFloors();
         this.createEnermy();
-        this.createCharacter();
+        this.createCharacter(5);
 
         this.setKeyboardEnabled( true );
 
@@ -20,18 +20,17 @@ var GameLayer = cc.LayerColor.extend({
     update: function(){
         this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
-        this.updateEnermy();
         this.HPbar.scheduleUpdate();
 
         if( this.Neko.isDie() ) {
-            var delay = cc.DelayTime.create(0.5);
+           // var delay = cc.DelayTime.create(0.5);
 
-            this.runAction(cc.Sequence.create(
-                delay,
-            cc.CallFunc.create(function () {
+           // this.runAction(cc.Sequence.create(
+           //     delay,
+           // cc.CallFunc.create(function () {
                 this.restart();
-            }, this)
-        ));
+           // }, this)
+       // ));
            
         }
     },
@@ -46,12 +45,12 @@ var GameLayer = cc.LayerColor.extend({
     },
 
 
-    createCharacter: function() {
+    createCharacter: function( life ) {
         this.Neko = new Neko( 200/2, /*128*/ 800);
         this.startPointX = 200/2;
         this.startPointY = 800;
 
-        this.HPbar = new HPbar(this.Neko);
+        this.HPbar = new HPbar(this.Neko, life);
         this.addChild(this.HPbar);
         
         this.Neko.setHP( this.HPbar );
@@ -75,6 +74,13 @@ var GameLayer = cc.LayerColor.extend({
             b.setFloors( this.floors );
             this.addChild( b );
         }, this );
+        this.updateEnermy();
+    },
+    removeEnermyFromArray: function() {
+        for( var i=0;i<this.enermies.length;i++ ) {
+            if( this.enermies[i].isDie() )
+                this.enermies.splice(i,1);
+        }
     },
 
     updateEnermy: function() { 
@@ -133,6 +139,7 @@ var GameLayer = cc.LayerColor.extend({
 
     removeSprite: function( sprite ) {
         this.removeChild( sprite );
+
         this.enermies.shift();
     },
 
@@ -141,22 +148,20 @@ var GameLayer = cc.LayerColor.extend({
 
     },
 
-    deleteCharacter: function() {
-        this.removeChild( this);
-    },
-
     restart: function() {
-        this.Neko.setPosition(this.startPointX,this.startPointY);
+        var previousLife = this.HPbar.getLife();
+
+        //this.Neko.setPosition(this.startPointX,this.startPointY);
         this.removeChild(this.Neko);
         this.removeChild(this.HPbar);
         
         this.enermies.forEach( function( b ) {
-            b.setFloors( this.floors );
+            //b.setFloors( this.floors );
             this.removeChild( b );
         }, this );
-
-        this.createCharacter();
+        
         this.createEnermy();
+        this.createCharacter( previousLife - 1 );
         this.followCharacter();
 
     },

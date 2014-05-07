@@ -1,5 +1,5 @@
 var HPbar = cc.Sprite.extend({
-	 ctor: function( character ) {
+	 ctor: function( character, life ) {
         this._super();
         this.initWithFile( 'images/hp_bar.gif' );
         this.scale = 0.8;
@@ -7,6 +7,8 @@ var HPbar = cc.Sprite.extend({
 
         this.MAX_HEALTH = 15;
         this.MAX_LIFE = 5;
+
+        this.life = life;
         this.createHealth();
         this.createLife();
 
@@ -43,33 +45,40 @@ var HPbar = cc.Sprite.extend({
     },
 
     createLife: function() {
-        this.life = [];
+        this.lives = [];
 
-        for( var i = 0; i < this.MAX_LIFE; i++ ) {
-            this.life.push( new Life(i*40) );
-            this.addChild( this.life[i] );
+        for( var i = 0; i < this.life; i++ ) {
+            this.lives.push( new Life(i*40) );
+            this.addChild( this.lives[i] );
         }
     },
 
     lostHealth: function() {
         this.removeChild(this.health.pop());
-        if( this.health.length == 0 ) {
-            this.lostLife();
-
-           // this.createHealth();
-        }
+       // if( this.health.length == 0 ) {
+      //      this.lostLife();
+      //  }
     },
 
     lostLife: function() {
-        this.removeChild(this.life.pop());
+        this.removeChild(this.lives.pop());
     },
 
     gainHealth: function() {
         this.addChild(this.health.push( new HP(i*7) ) );
     },
 
-    getRemainLife: function() {
+    getRemainHealth: function() {
         return this.health.length;
+    },
+
+    getLife: function() {
+        console.log(this.life);
+        return this.lives.length;
+    },
+
+    setLife: function() {
+
     },
 
  });

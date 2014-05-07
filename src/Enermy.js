@@ -123,6 +123,7 @@ var Enermy = cc.Sprite.extend({
         
         if( this.isDie() ) {
            // this.array.splice(i, 1);
+            this.gameLayer.removeEnermyFromArray();
             this.gameLayer.removeChild( this );
             this.setPosition(0,0); //Hide this enermy
         }
