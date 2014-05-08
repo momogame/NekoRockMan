@@ -157,13 +157,18 @@ var GameLayer = cc.LayerColor.extend({
     bulletHandleKeyDown: function(e) {
 
         if( e == cc.KEY.space && !this.Neko.getCollide() ) {
-            this.bullet = new Bullet( this );
             var charPos = this.Neko.getPosition();
+            this.bullet = new Bullet( this );
 
-            this.bullet.setPosition(charPos.x + 10,charPos.y + 20 );
-            this.addChild(this.bullet);
+            if( this.preBullet == null || this.bullet.checkPreviousBullet() ) {
+                
+                this.preBullet = this.bullet;
+                
+                this.bullet.setPosition(charPos.x + 10,charPos.y + 20 );
+                this.addChild(this.bullet);
 
-            this.bullet.scheduleUpdate();
+                this.bullet.scheduleUpdate();
+            }
         }
 
     },

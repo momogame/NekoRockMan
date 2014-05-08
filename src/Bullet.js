@@ -6,6 +6,7 @@ var Bullet = cc.Sprite.extend({
         this.gameLayer = GameLayer;
         this.NekoIsFlipped = GameLayer.Neko.getFlipped()
         this.direction = 0;
+        this.bulletDirection();
         this.v = 8;
 
         this.charPos = GameLayer.Neko.getPosition();
@@ -15,7 +16,7 @@ var Bullet = cc.Sprite.extend({
     },
 
     update: function() {
-    	this.bulletDirection();
+    	
 
     	var pos = this.getPosition();
     	this.setPosition( new cc.Point( pos.x + (this.direction*this.v) , pos.y ) );
@@ -29,6 +30,7 @@ var Bullet = cc.Sprite.extend({
                 var enermyPos = this.enermies[i].getPosition();
                 this.enermies[i].bulletColision();
                 this.gameLayer.removeChild( this );
+                this.gameLayer.preBullet = null;
             }
         } 
 
@@ -59,6 +61,34 @@ var Bullet = cc.Sprite.extend({
 
         return ( Math.abs(pos.x - objPos.x) <= 20 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
     },
+
+    getX: function() {
+        var pos = this.getPosition();
+        return pos.x;
+    },
+
+    getDirection: function() {
+        return this.direction;
+    },
+
+    checkPreviousBullet: function() {
+        if(  (this.direction == this.gameLayer.preBullet.getDirection()) ) {
+
+            if( !this.isFlippedX() ) {
+                return (this.charPos.x + 10) + 100 <= this.gameLayer.preBullet.getX();
+            }
+            else {
+                return (this.charPos.x + 10) - 100 >= this.gameLayer.preBullet.getX();
+            }
+
+        }
+        else {
+            return true;
+        }
+
+
+    },
+
 
 
  });
