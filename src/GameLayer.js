@@ -10,7 +10,7 @@ var GameLayer = cc.LayerColor.extend({
 
         this.STATES = GameLayer.STATES.FRONT;
 
-        this.passCheckPoint = 1;
+        this.passCheckPoint = 0;
 
         this.createBackground();
         this.createFloors();
@@ -32,11 +32,21 @@ var GameLayer = cc.LayerColor.extend({
         this.Neko.scheduleUpdate();
         this.HPbar.scheduleUpdate();
         var pos = this.Neko.getPosition();
+        console.log(pos.x);
 
         if( pos.x >= 4000 && pos.x < 4010 ) {
             console.log('checkPoint');
-            this.checkPoint = [ 4000, pos.y ];
+            this.checkPoint = [ 4000, 800 ];
+            this.passCheckPoint++;
         }
+
+
+        if( pos.x >= 6000 && pos.x < 6010 ) {
+            this.backGround[0].setPosition(7190,300);
+            this.backGround[1].setPosition(8790,300);
+            //this.backGround[2].setPosition(10390,300);
+        }
+
 
         if( this.Neko.isDie() ) {
                 this.restart();
@@ -116,14 +126,35 @@ var GameLayer = cc.LayerColor.extend({
         var enermy5 = new Enermy(1600,400,this);
         this.enermies.push( enermy5 );
 
+        var enermy6 = new Enermy(1800,400,this);
+        this.enermies.push( enermy6 );
 
+        var enermy7 = new Enermy(2200,400,this);
+        this.enermies.push( enermy7 );
+
+        var enermy8 = new Enermy(6500,400,this);
+        this.enermies.push( enermy8 );
+
+        var enermy9 = new Enermy(6700,400,this);
+        this.enermies.push( enermy9 );
+
+        var enermy10 = new Enermy(6900,400,this);
+        this.enermies.push( enermy10 );
+
+        var enermy11 = new Enermy(7100,400,this);
+        this.enermies.push( enermy11 );
+
+        var enermy12 = new Enermy(7300,400,this);
+        this.enermies.push( enermy12 );
 
         this.enermies.forEach( function( b ) {
             b.setFloors( this.floors );
-            //this.addChild( b );
+            this.addChild( b );
         }, this );
         this.updateEnermy();
     },
+
+
     
     removeEnermyFromArray: function() {
         for( var i=0;i<this.enermies.length;i++ ) {
@@ -147,7 +178,7 @@ var GameLayer = cc.LayerColor.extend({
         var groundFloor2 = new Floor( 1000, 0, 2000, 104);
         this.floors.push( groundFloor2 );
 
-        var groundFloor3 = new Floor( 6000, 0, 7600, 104);
+        var groundFloor3 = new Floor( 5900, 0, 7500, 104);
         this.floors.push( groundFloor3 );
 
         // Float 
@@ -244,7 +275,10 @@ var GameLayer = cc.LayerColor.extend({
                 this.removeChild( b );
             }, this );
         
-            this.createEnermy();
+            //if( this.passCheckPoint == 0 ) { 
+                this.createEnermy();
+            //}
+
             this.createCharacter( previousLife - 1 );
             this.followCharacter();
         }

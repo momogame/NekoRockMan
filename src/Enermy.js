@@ -1,7 +1,7 @@
 var Enermy = cc.Sprite.extend({
     ctor: function( x , y, GameLayer) {
         this._super();
-        this.initWithFile( 'images/blackBox.gif' );
+        this.initWithFile( 'images/bot1.png' );
 
         this.x = x;
         this.y = y;

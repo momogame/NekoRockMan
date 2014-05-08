@@ -225,8 +225,7 @@ var Neko = cc.Sprite.extend({
                    
                     //this.x += this.vx;
 
-               if( !this.iscollide ) {
-                    console.log("HERE");  
+               if( !this.iscollide ) {  
                     this.hp.lostHealth();
                 }
                
@@ -304,6 +303,12 @@ var Neko = cc.Sprite.extend({
 
     setEnermies: function( enermies ) {
         this.enermies = enermies;
+    },
+
+    addEnermies: function( enermy ) {
+        for( i = 0; i < this.enermies.length; i++ ) {
+            this.enermies.push[ enermy ];
+        }
     },
 
     setHP: function( HP,life ) {
