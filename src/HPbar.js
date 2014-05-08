@@ -32,7 +32,7 @@ var HPbar = cc.Sprite.extend({
         if( this.character.x >= 400 ) //Before screen start to follow character
             this.x = 50 + (this.character.x - 400);
         if( this.character.x >= this.character.endPoint - 400 ) //Before screen stop to follow character
-            this.x = 50 + 800;
+            this.x = 50 + (this.character.endPoint - 800 );
     },
 
     createHealth: function() {

@@ -4,12 +4,17 @@ var GameLayer = cc.LayerColor.extend({
         this.setPosition( new cc.Point( 0, 0 ) );
 
         this.startPoint = [ 100, 800 ];
-        this.endPoint = [ 3200, 600 ]; //Point x should be multiple of 800
+        this.endPoint = [ 8800, 600 ]; //Point x should be multiple of 800
+
+        this.checkPoint = [ this.startPoint[0], this.startPoint[1] ];
 
         this.STATES = GameLayer.STATES.FRONT;
 
+        this.passCheckPoint = 1;
+
         this.createBackground();
         this.createFloors();
+        this.createCheckPoint();
         this.createEnermy();
         this.createCharacter(5);
 
@@ -26,16 +31,15 @@ var GameLayer = cc.LayerColor.extend({
         //this.newBG.scheduleUpdate();
         this.Neko.scheduleUpdate();
         this.HPbar.scheduleUpdate();
+        var pos = this.Neko.getPosition();
+
+        if( pos.x >= 4000 && pos.x < 4010 ) {
+            console.log('checkPoint');
+            this.checkPoint = [ 4000, pos.y ];
+        }
 
         if( this.Neko.isDie() ) {
-           // var delay = cc.DelayTime.create(0.5);
-
-           // this.runAction(cc.Sequence.create(
-           //     delay,
-           // cc.CallFunc.create(function () {
                 this.restart();
-           // }, this)
-       // ));
         }
 
         var NekoPos = this.Neko.getPosition();
@@ -52,17 +56,35 @@ var GameLayer = cc.LayerColor.extend({
         var bg1 = new newBG( 800, 600/2 );
         this.backGround.push( bg1 );
 
-        var bg2 = new newBG( 2350, 600/2 );
+        var bg2 = new newBG( 2390, 600/2 );
         this.backGround.push( bg2 );
+
+        var bg3 = new newBG( 3990, 600/2 );
+        this.backGround.push( bg3 );
+
+        var bg4 = new newBG( 5590, 600/2 );
+        this.backGround.push( bg4 );
 
         this.backGround.forEach( function( b ) {
             this.addChild( b );
         }, this );
     },
 
+    createCheckPoint: function() {
+        this.poles = [];
+
+        var checkPole1 = new checkPole(4000,250);
+        this.poles.push( checkPole1 );
+
+        this.poles.forEach( function( b ) {
+            this.addChild( b );
+        }, this );
+
+    },
+
 
     createCharacter: function( life ) {
-        this.Neko = new Neko( this.startPoint[0] , this.startPoint[1] );
+        this.Neko = new Neko( this.checkPoint[0] , this.checkPoint[1] );
 
         this.HPbar = new HPbar(this.Neko, life);
         this.addChild(this.HPbar);
@@ -98,7 +120,7 @@ var GameLayer = cc.LayerColor.extend({
 
         this.enermies.forEach( function( b ) {
             b.setFloors( this.floors );
-            this.addChild( b );
+            //this.addChild( b );
         }, this );
         this.updateEnermy();
     },
@@ -125,6 +147,9 @@ var GameLayer = cc.LayerColor.extend({
         var groundFloor2 = new Floor( 1000, 0, 2000, 104);
         this.floors.push( groundFloor2 );
 
+        var groundFloor3 = new Floor( 6000, 0, 7600, 104);
+        this.floors.push( groundFloor3 );
+
         // Float 
         // Float floor should have a high of 50 
         var floor1 = new Floor( 0, 180, 400, 230 );
@@ -142,6 +167,29 @@ var GameLayer = cc.LayerColor.extend({
         var floor5 = new Floor( 2100, 200, 2300, 250 );
         this.floors.push( floor5 );
 
+        var floor6 = new Floor( 2500, 300, 2600, 350 );
+        this.floors.push( floor6 );
+
+        var floor7 = new Floor( 2800, 100, 2850, 150 );
+        this.floors.push( floor7 );
+
+        var floor8 = new Floor( 3050, 200, 3100, 250 );
+        this.floors.push( floor8 );
+
+        var floor9 = new Floor( 3300, 200, 3350, 250 );
+        this.floors.push( floor9 );
+
+        var floor10 = new Floor( 3500, 200, 3550, 250 );
+        this.floors.push( floor10 );
+
+        var floor11 = new Floor( 3700, 200, 3750, 250 );
+        this.floors.push( floor11 );
+
+        var floor12 = new Floor( 4100, 470, 5000, 520 );
+        this.floors.push( floor12 );
+
+        var floor13 = new Floor( 4000, 200, 5600, 250 );
+        this.floors.push( floor13 );
 
         this.floors.forEach( function( b ) {
             this.addChild( b );

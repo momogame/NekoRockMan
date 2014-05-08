@@ -19,6 +19,7 @@
             'src/Bullet.js',  
             'src/Enermy.js',
             'src/HPbar.js',
+            'src/checkPole.js',
             'src/resource.js',  //add your own files in order here
         ]
     };
