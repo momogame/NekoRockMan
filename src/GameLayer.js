@@ -52,7 +52,7 @@ var GameLayer = cc.LayerColor.extend({
         var bg1 = new newBG( 800, 600/2 );
         this.backGround.push( bg1 );
 
-        var bg2 = new newBG( 2400, 600/2 );
+        var bg2 = new newBG( 2350, 600/2 );
         this.backGround.push( bg2 );
 
         this.backGround.forEach( function( b ) {
@@ -88,12 +88,21 @@ var GameLayer = cc.LayerColor.extend({
         var enermy3 = new Enermy(1200,400,this);
         this.enermies.push( enermy3 );
 
+        var enermy4 = new Enermy(1400,400,this);
+        this.enermies.push( enermy4 );
+
+        var enermy5 = new Enermy(1600,400,this);
+        this.enermies.push( enermy5 );
+
+
+
         this.enermies.forEach( function( b ) {
             b.setFloors( this.floors );
             this.addChild( b );
         }, this );
         this.updateEnermy();
     },
+    
     removeEnermyFromArray: function() {
         for( var i=0;i<this.enermies.length;i++ ) {
             if( this.enermies[i].isDie() )
@@ -147,12 +156,11 @@ var GameLayer = cc.LayerColor.extend({
 
     bulletHandleKeyDown: function(e) {
 
-        if( e == cc.KEY.space) {
-
+        if( e == cc.KEY.space && !this.Neko.getCollide() ) {
             this.bullet = new Bullet( this );
             var charPos = this.Neko.getPosition();
 
-            this.bullet.setPosition(charPos.x,charPos.y + 17 );
+            this.bullet.setPosition(charPos.x + 10,charPos.y + 20 );
             this.addChild(this.bullet);
 
             this.bullet.scheduleUpdate();
@@ -197,7 +205,6 @@ var GameLayer = cc.LayerColor.extend({
 
      onKeyDown: function(e){ 
         if( e == cc.KEY.enter ) {
-            console.log(cc.KEY.enter);
             this.STATES = GameLayer.STATES.STARTED;
         }
 

@@ -196,23 +196,23 @@ var Neko = cc.Sprite.extend({
         var objPos = obj.getPosition();
         var pos = this.getPosition();
 
-        var nekoRec = this.getBoundingBox();
-        var objRec = obj.getBoundingBox();
+        //var nekoRec = this.getBoundingBox();
+        //var objRec = obj.getBoundingBox();
 
-        //return ( Math.abs(pos.x - objPos.x) <= 30 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
-        return cc.rectIntersectsRect( nekoRec , objRec );
+        return ( Math.abs(pos.x - objPos.x) <= 50 ) && ( Math.abs(pos.y - objPos.y) <= 40 );
+        //return cc.rectIntersectsRect( nekoRec , objRec );
     },
 
 
     objectCollisionHandler: function( obj ) {
-            for( var i = 0; i < obj.length; i++ ) {
+        for( var i = 0; i < obj.length; i++ ) {
             if( this.closeTo( obj[i] ) ) {
 
                 //this.STATUS = Neko.STATUS.INJURE;
 
                 if( this.getFlipped() ) {
                     //this.x += -50;
-                    this.schedule( this.timer,0,30,0 );
+                    this.schedule( this.timer,0,5,0 );
                     //this.accelerateX( -1 );
                     
                 }
@@ -220,32 +220,40 @@ var Neko = cc.Sprite.extend({
                      //this.runAction(cc.MoveTo.create(1,cc.p(this.x+50,this.y)));
                     //this.accelerateX( 1 );
                     //this.x += 50;
-                   this.schedule( this.timer,0,30,0 );
+                   this.schedule( this.timer,0,5,0 );
                  }
                    
                     //this.x += this.vx;
 
-               if( !this.iscollide )  
+               if( !this.iscollide ) {
+                    console.log("HERE");  
                     this.hp.lostHealth();
+                }
                
             }
-            else
-                this.iscollide=false;
+           // else
+                
         } 
+        this.iscollide = false;
+
+        //console.log(this.iscollide);
     },
     timer: function() {
         var dir = 0;
         if( this.getFlipped() ) {
             dir = 1;
+            this.moveRight = false;
         }
-        else
+        else {
             dir = -1
+            this.moveLeft = false;
+        }
 
 
-        this.x -= 3*dir ;
+        this.x -= 7*dir ;
 
         this.iscollide=true;
-        this.moveRight=false;
+        //this.moveRight=false;
     },
 
     isDie: function() {
@@ -260,12 +268,6 @@ var Neko = cc.Sprite.extend({
         if(this.timer > 0) {
             this.timer--;
         }
-    },
-
-    setStatus: function( status ) {
-        console.log('hello' + status);
-        this.STATUS = status;
-        console.log('now ' + this.STATUS);
     },
 
     bounce: function() {
@@ -319,6 +321,10 @@ var Neko = cc.Sprite.extend({
 
     getFlipped: function() {
         return this.isFlippedX();      
+    },
+
+    getCollide: function() {
+        return this.isCollide;
     },
 
     ///////////////////////////////////////////////////////////
