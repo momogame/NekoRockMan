@@ -1,7 +1,8 @@
 var Neko = cc.Sprite.extend({
     ctor: function( x , y ) {
         this._super();
-        this.initWithFile( 'images/nekoR_v3.gif' );
+        this.setAnchorPoint( cc.p( 0.5, 0 ) );
+        //this.initWithFile( 'images/nekoR_v3.gif' );
 
         this.x = x;
         this.y = y;
@@ -18,6 +19,7 @@ var Neko = cc.Sprite.extend({
         this.moveLeft = false;
         this.moveRight = false;
         this.jump = false;
+        this.shoot = false;
 
         this.ground = null;
 
@@ -26,7 +28,11 @@ var Neko = cc.Sprite.extend({
 
         this.hp = null;
 
-        this.timer = 500;
+        //this.timer = 500;
+        this.setFlippedX(true);
+
+        this.STATUS = Neko.STATUS.STILL;
+        this.createAnimation();
 
 
         this.updateSpritePosition();
@@ -69,6 +75,8 @@ var Neko = cc.Sprite.extend({
 
         this.updateSpritePosition();
 
+        this.updateAnimation();
+
     },
 
     updateXMovement: function() {
@@ -76,8 +84,10 @@ var Neko = cc.Sprite.extend({
             if ( ( !this.moveLeft ) && ( !this.moveRight ) ) {
                 this.vx = 0;
             } else if ( this.moveRight ) {
+                this.STATUS = Neko.STATUS.MOVELEFT;
                 this.accelerateX( 1 );
             } else {
+                this.STATUS = Neko.STATUS.MOVERIGHT;
                 this.accelerateX( -1 );
             }
         }
@@ -103,13 +113,16 @@ var Neko = cc.Sprite.extend({
 
     updateYMovement: function() {
         if ( this.ground ) {
+            this.STATUS = Neko.STATUS.STILL;
             this.vy = 0;
             if ( this.jump ) {
+                this.STATUS = Neko.STATUS.JUMP;
                 this.vy = this.jumpV;
-                this.y = this.ground.getTopY() + 25  + this.vy;
+                this.y = this.ground.getTopY() + 0  + this.vy;
                 this.ground = null;
             } 
         } else {
+
             this.vy += this.g;
             this.y += this.vy;
         }
@@ -144,7 +157,7 @@ var Neko = cc.Sprite.extend({
                 
                 if ( topFloor ) {
                     this.ground = topFloor;
-                    this.y = topFloor.getTopY() + 25;
+                    this.y = topFloor.getTopY() ;
                     this.vy = 0;
                 }
             }
@@ -167,10 +180,10 @@ var Neko = cc.Sprite.extend({
 
     flippedDirection: function() {
         if( this.moveLeft ) {
-            this.setFlippedX(true);
+            this.setFlippedX(false);
         }
         if( this.moveRight ) {
-            this.setFlippedX(false);
+            this.setFlippedX(true);
         }
     },
 
@@ -178,18 +191,33 @@ var Neko = cc.Sprite.extend({
         var objPos = obj.getPosition();
         var pos = this.getPosition();
 
-        return ( Math.abs(pos.x - objPos.x) <= 30 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
+        var nekoRec = this.getBoundingBox();
+        var objRec = obj.getBoundingBox();
+
+        //return ( Math.abs(pos.x - objPos.x) <= 30 ) && ( Math.abs(pos.y - objPos.y) <= 20 );
+        return cc.rectIntersectsRect( nekoRec , objRec );
     },
 
 
     objectCollisionHandler: function( obj ) {
             for( var i = 0; i < obj.length; i++ ) {
             if( this.closeTo( obj[i] ) ) {
-                if( !this.getFlipped() ) {
-                    this.x += -50;                         
+
+                //this.STATUS = Neko.STATUS.INJURE;
+
+                if( this.getFlipped() ) {
+                    this.x += -50;
+                    //this.runAction(cc.MoveTo.create(1,cc.p(this.x-50,this.y)));
+                    //this.accelerateX( -1 );
                 }
-                else
+                else{
+                     //this.runAction(cc.MoveTo.create(1,cc.p(this.x+50,this.y)));
+                    //this.accelerateX( 1 );
                     this.x += 50;
+                 }
+                    
+                    //this.x += this.vx;
+
                 
                this.hp.lostHealth();
             }
@@ -209,6 +237,14 @@ var Neko = cc.Sprite.extend({
             this.timer--;
         }
     },
+
+    setStatus: function( status ) {
+        console.log('hello' + status);
+        this.STATUS = status;
+        console.log('now ' + this.STATUS);
+    },
+
+
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -255,12 +291,65 @@ var Neko = cc.Sprite.extend({
         return this.isFlippedX();      
     },
 
+    ///////////////////////////////////////////////////////////
+
+    createAnimation: function(){
+        this.Action = new Array();
+        this.Action[0] = this.charAnimation( "stand" , 10 );
+        this.Action[1] = this.charAnimation( "move", 4 );
+        this.Action[2] = this.charAnimation( "move", 4 );
+        this.Action[3] = this.charAnimation( "jump", 8 );
+        this.Action[4] = this.charAnimation( "shoot", 4 );
+
+    },
+
+    charAnimation: function( Action , num ){
+        var cache = cc.SpriteFrameCache.getInstance();
+        cache.addSpriteFrames( ani_neko[0] , ani_neko[1] );
+
+        var animFrames = [];
+        for (var i = 0; i < num; i++) {
+            var str = "NK_" + Action + "_" + (i+1) + ".png";
+            var frame = cache.getSpriteFrame(str);
+            animFrames.push(frame);
+        }
+
+        var animation = cc.Animation.create(animFrames, 0.1);
+        return cc.Animate.create(animation);
+    },
+
+    updateAnimation: function() {
+        if( this.shoot ) {
+            this.STATUS = Neko.STATUS.SHOOT;
+        }
+        if( this.lastSTATUS != this.STATUS ){
+            this.lastSTATUS = this.STATUS;
+            this.stopAllActions();
+            this.runAction(this.Action[this.STATUS]);
+        }else{
+            if(this.Action[this.lastSTATUS].isDone() /*&& this.STATUS != Neko.STATUS.DEAD*/ ){
+                this.runAction(this.Action[this.STATUS]);    
+            }
+        }
+    },
+
 
 
 
 });
 
+Neko.STATUS ={
+    STILL: 0,
+    MOVELEFT: 1,
+    MOVERIGHT: 2,
+    JUMP: 3,
+    SHOOT: 4,
+   // INJURE: 5,
+   // DEAD: 6,
+};
+
 Neko.KEYMAP = {}
 Neko.KEYMAP[cc.KEY.left] = 'moveLeft';
 Neko.KEYMAP[cc.KEY.right] = 'moveRight';
 Neko.KEYMAP[cc.KEY.up] = 'jump';
+Neko.KEYMAP[cc.KEY.space] = 'shoot';

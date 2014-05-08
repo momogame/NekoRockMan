@@ -18,7 +18,8 @@
             'src/Floor.js',
             'src/Bullet.js',  
             'src/Enermy.js',
-            'src/HPbar.js',  //add your own files in order here
+            'src/HPbar.js',
+            'src/resource.js',  //add your own files in order here
         ]
     };
 

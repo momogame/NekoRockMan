@@ -40,8 +40,8 @@ var Bullet = cc.Sprite.extend({
     },
 
     bulletDirection: function() {
-    	this.setFlippedX(this.NekoIsFlipped);
-    	if( this.NekoIsFlipped ) {
+    	this.setFlippedX(!this.NekoIsFlipped);
+    	if( !this.NekoIsFlipped ) {
     		this.direction = -1;
     	}
     	else {

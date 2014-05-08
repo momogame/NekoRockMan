@@ -6,6 +6,7 @@ var GameLayer = cc.LayerColor.extend({
         this.startPoint = [ 100, 800 ];
         this.endPoint = [ 3200, 600 ]; //Point x should be multiple of 800
 
+        this.STATES = GameLayer.STATES.FRONT;
 
         this.createBackground();
         this.createFloors();
@@ -84,6 +85,9 @@ var GameLayer = cc.LayerColor.extend({
         var enermy2 = new Enermy(650,600,this);
         this.enermies.push( enermy2 );
 
+        var enermy3 = new Enermy(1200,400,this);
+        this.enermies.push( enermy3 );
+
         this.enermies.forEach( function( b ) {
             b.setFloors( this.floors );
             this.addChild( b );
@@ -114,7 +118,7 @@ var GameLayer = cc.LayerColor.extend({
 
         // Float 
         // Float floor should have a high of 50 
-        var floor1 = new Floor( 0, 200, 400, 250 );
+        var floor1 = new Floor( 0, 180, 400, 230 );
         this.floors.push( floor1 );
 
         var floor2 = new Floor( 200, 300, 400, 350 );
@@ -144,10 +148,11 @@ var GameLayer = cc.LayerColor.extend({
     bulletHandleKeyDown: function(e) {
 
         if( e == cc.KEY.space) {
+
             this.bullet = new Bullet( this );
             var charPos = this.Neko.getPosition();
 
-            this.bullet.setPosition(charPos.x,charPos.y);
+            this.bullet.setPosition(charPos.x,charPos.y + 17 );
             this.addChild(this.bullet);
 
             this.bullet.scheduleUpdate();
@@ -161,6 +166,7 @@ var GameLayer = cc.LayerColor.extend({
     },
 
     gameOver: function() {
+        this.Neko.unscheduleUpdate();
         this.enermy.unscheduleUpdate();
 
     },
@@ -168,31 +174,37 @@ var GameLayer = cc.LayerColor.extend({
     restart: function() {
         var previousLife = this.HPbar.getLife();
 
-        this.removeChild(this.Neko);
-        this.removeChild(this.HPbar);
+        if( previousLife != 0 ) { 
+
+            this.removeChild(this.Neko);
+            this.removeChild(this.HPbar);
         
-        this.enermies.forEach( function( b ) {
-            this.removeChild( b );
-        }, this );
+            this.enermies.forEach( function( b ) {
+                this.removeChild( b );
+            }, this );
         
-        this.createEnermy();
-        this.createCharacter( previousLife - 1 );
-        this.followCharacter();
+            this.createEnermy();
+            this.createCharacter( previousLife - 1 );
+            this.followCharacter();
+        }
+        else {
+            this.STATES = GameLayer.STATES.END;
+            this.gameOver();
+        }
 
     },
 
 
-     onKeyDown: function(e){
-        this.Neko.handleKeyDown( e );
-        if( e == cc.KEY.space ){                           
-            var moveNaja = cc.MoveBy.create(1, cc.p(100,0));
-            this.Neko.runAction( moveNaja );
-            
-          if ( moveNaja.isDone() ) {
-                console.log(1);
-          }
-}
-        this.bulletHandleKeyDown( e );
+     onKeyDown: function(e){ 
+        if( e == cc.KEY.enter ) {
+            console.log(cc.KEY.enter);
+            this.STATES = GameLayer.STATES.STARTED;
+        }
+
+        if( this.STATES == GameLayer.STATES.STARTED ) { 
+            this.Neko.handleKeyDown( e );
+            this.bulletHandleKeyDown( e );
+        }
     },
 
      onKeyUp: function( e ){
