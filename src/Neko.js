@@ -64,10 +64,12 @@ var Neko = cc.Sprite.extend({
 
         var currentPositionRect = this.getPlayerRect();
 
-        this.objectCollisionHandler(this.enermies);
+        
 
         this.updateYMovement();
         this.updateXMovement();
+
+       // this.objectCollisionHandler(this.enermies);
 
         var newPositionRect = this.getPlayerRect();
         this.handleCollision( currentPositionRect,
@@ -80,6 +82,7 @@ var Neko = cc.Sprite.extend({
     },
 
     updateXMovement: function() {
+
         if ( this.ground ) {
             if ( ( !this.moveLeft ) && ( !this.moveRight ) ) {
                 this.vx = 0;
@@ -95,6 +98,8 @@ var Neko = cc.Sprite.extend({
         if( this.isFallingDown() ){
             this.vx = 0;
         }    
+
+        this.objectCollisionHandler( this.enermies );
 
         this.x += this.vx;
         this.checkOutOfScreen();  
@@ -118,7 +123,7 @@ var Neko = cc.Sprite.extend({
             if ( this.jump ) {
                 this.STATUS = Neko.STATUS.JUMP;
                 this.vy = this.jumpV;
-                this.y = this.ground.getTopY() + 0  + this.vy;
+                this.y = this.ground.getTopY() +  this.vy;
                 this.ground = null;
             } 
         } else {
@@ -206,22 +211,41 @@ var Neko = cc.Sprite.extend({
                 //this.STATUS = Neko.STATUS.INJURE;
 
                 if( this.getFlipped() ) {
-                    this.x += -50;
-                    //this.runAction(cc.MoveTo.create(1,cc.p(this.x-50,this.y)));
+                    //this.x += -50;
+                    this.schedule( this.timer,0,30,0 );
                     //this.accelerateX( -1 );
+                    
                 }
                 else{
                      //this.runAction(cc.MoveTo.create(1,cc.p(this.x+50,this.y)));
                     //this.accelerateX( 1 );
-                    this.x += 50;
+                    //this.x += 50;
+                   this.schedule( this.timer,0,30,0 );
                  }
-                    
+                   
                     //this.x += this.vx;
 
-                
-               this.hp.lostHealth();
+               if( !this.iscollide )  
+                    this.hp.lostHealth();
+               
             }
+            else
+                this.iscollide=false;
         } 
+    },
+    timer: function() {
+        var dir = 0;
+        if( this.getFlipped() ) {
+            dir = 1;
+        }
+        else
+            dir = -1
+
+
+        this.x -= 3*dir ;
+
+        this.iscollide=true;
+        this.moveRight=false;
     },
 
     isDie: function() {
@@ -244,6 +268,11 @@ var Neko = cc.Sprite.extend({
         console.log('now ' + this.STATUS);
     },
 
+    bounce: function() {
+
+    },
+
+
 
 
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +280,8 @@ var Neko = cc.Sprite.extend({
 
     
     handleKeyDown: function( e ) {
-        if ( Neko.KEYMAP[ e ] != undefined ) {
+        if( this.iscollide ) ;
+        else if ( Neko.KEYMAP[ e ] != undefined ) {
             this[ Neko.KEYMAP[ e ] ] = true;
         }
 
