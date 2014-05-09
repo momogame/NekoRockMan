@@ -4,7 +4,7 @@ var GameLayer = cc.LayerColor.extend({
         this.setPosition( new cc.Point( 0, 0 ) );
 
         this.startPoint = [ 100, 800 ];
-        this.endPoint = [ 8800, 600 ]; //Point x should be multiple of 800
+        this.endPoint = [ 13600, 600 ]; //Point x should be multiple of 800
 
         this.checkPoint = [ this.startPoint[0], this.startPoint[1] ];
 
@@ -34,18 +34,41 @@ var GameLayer = cc.LayerColor.extend({
         var pos = this.Neko.getPosition();
         console.log(pos.x);
 
-        if( pos.x >= 4000 && pos.x < 4010 ) {
-            console.log('checkPoint');
-            this.checkPoint = [ 4000, 800 ];
-            this.passCheckPoint++;
-        }
-
-
         if( pos.x >= 6000 && pos.x < 6010 ) {
+            console.log('checkPoint');
+            this.checkPoint = [ 6000, 800 ];
+            this.passCheckPoint++;
+
             this.backGround[0].setPosition(7190,300);
             this.backGround[1].setPosition(8790,300);
-            //this.backGround[2].setPosition(10390,300);
+            this.backGround[2].setPosition(10390,300);
         }
+
+        if( pos.x >= 10240 && pos.x < 10250 ) {
+            console.log('checkPoint');
+            this.checkPoint = [ 10240, 800 ];
+            this.passCheckPoint++;
+
+            this.backGround[3].setPosition(11990,300);
+            this.backGround[0].setPosition(13590,300);
+            this.backGround[1].setPosition(15190,300); 
+        }
+
+        if( pos.x >= 13500 && pos.x < 13510 ) {
+            this.STATES = GameLayer.STATES.END;
+            this.Neko.moveRight = true;
+        }
+
+        if( pos.x >= 13800 ) {    
+            this.gameOver(); 
+
+            this.logLabel = cc.LabelTTF.create( 'STAGE CLEAR!', 'Arial' ,70 );
+            this.logLabel.setAnchorPoint( 1,1 );
+            this.logLabel.setPosition( 13450, 350 );
+            this.logLabel.setFontFillColor( new cc.Color3B( 255,255,255 ) );
+            this.addChild( this.logLabel,52 );
+        }
+
 
 
         if( this.Neko.isDie() ) {
@@ -53,10 +76,6 @@ var GameLayer = cc.LayerColor.extend({
         }
 
         var NekoPos = this.Neko.getPosition();
-
-    },
-
-    startGamePlay: function() {
 
     },
 
@@ -83,8 +102,11 @@ var GameLayer = cc.LayerColor.extend({
     createCheckPoint: function() {
         this.poles = [];
 
-        var checkPole1 = new checkPole(4000,250);
+        var checkPole1 = new checkPole(6000,104);
         this.poles.push( checkPole1 );
+
+        var checkPole2 = new checkPole(10240,230);
+        this.poles.push( checkPole2 );
 
         this.poles.forEach( function( b ) {
             this.addChild( b );
@@ -132,6 +154,8 @@ var GameLayer = cc.LayerColor.extend({
         var enermy7 = new Enermy(2200,400,this);
         this.enermies.push( enermy7 );
 
+
+
         var enermy8 = new Enermy(6500,400,this);
         this.enermies.push( enermy8 );
 
@@ -146,6 +170,84 @@ var GameLayer = cc.LayerColor.extend({
 
         var enermy12 = new Enermy(7300,400,this);
         this.enermies.push( enermy12 );
+
+        var enermy13 = new Enermy(8500,400,this);
+        this.enermies.push( enermy13 );
+
+        var enermy14 = new Enermy(8600,400,this);
+        this.enermies.push( enermy14 );
+
+        var enermy15 = new Enermy(8700,400,this);
+        this.enermies.push( enermy15 );
+
+        var enermy16 = new Enermy(8900,400,this);
+        this.enermies.push( enermy16 );
+
+        var enermy17 = new Enermy(9000,400,this);
+        this.enermies.push( enermy17 );
+
+        var enermy18 = new Enermy(9100,400,this);
+        this.enermies.push( enermy18 );
+
+        var enermy19 = new Enermy(9200,400,this);
+        this.enermies.push( enermy19 );
+
+        var enermy20 = new Enermy(9300,400,this);
+        this.enermies.push( enermy20 );
+
+        var enermy21 = new Enermy(9400,400,this);
+        this.enermies.push( enermy21 );
+
+        var enermy22 = new Enermy(9500,400,this);
+        this.enermies.push( enermy22 );
+
+        var enermy23 = new Enermy(9700,400,this);
+        this.enermies.push( enermy23 );
+
+        var enermy24 = new Enermy(10600,400,this);
+        this.enermies.push( enermy24 );
+
+        var enermy24 = new Enermy(10700,400,this);
+        this.enermies.push( enermy24 );
+
+        var enermy24 = new Enermy(10800,400,this);
+        this.enermies.push( enermy24 );
+
+        var enermy24 = new Enermy(10900,400,this);
+        this.enermies.push( enermy24 );
+
+        var enermy25 = new Enermy(10800,200,this);
+        this.enermies.push( enermy25 );
+
+        var enermy25 = new Enermy(11340,200,this);
+        this.enermies.push( enermy25 );
+
+        var enermy26 = new Enermy(11770,200,this);
+        this.enermies.push( enermy26 );
+
+        var enermy27 = new Enermy(11800,200,this);
+        this.enermies.push( enermy27 );
+
+
+
+        var enermy28 = new Enermy(12800,300,this);
+        this.enermies.push( enermy28 );
+
+        var enermy29 = new Enermy(12900,300,this);
+        this.enermies.push( enermy29 );
+
+        var enermy30 = new Enermy(13000,300,this);
+        this.enermies.push( enermy30 );
+
+        var enermy31 = new Enermy(13100,300,this);
+        this.enermies.push( enermy31 );
+
+        var enermy32 = new Enermy(13200,300,this);
+        this.enermies.push( enermy32 );
+
+        var enermy33 = new Enermy(13300,300,this);
+        this.enermies.push( enermy33 );
+
 
         this.enermies.forEach( function( b ) {
             b.setFloors( this.floors );
@@ -180,6 +282,9 @@ var GameLayer = cc.LayerColor.extend({
 
         var groundFloor3 = new Floor( 5900, 0, 7500, 104);
         this.floors.push( groundFloor3 );
+
+        var groundFloor4 = new Floor( 8400, 0, 10000, 104);
+        this.floors.push( groundFloor4 );
 
         // Float 
         // Float floor should have a high of 50 
@@ -219,8 +324,70 @@ var GameLayer = cc.LayerColor.extend({
         var floor12 = new Floor( 4100, 470, 5000, 520 );
         this.floors.push( floor12 );
 
-        var floor13 = new Floor( 4000, 200, 5600, 250 );
+
+
+        var floor13 = new Floor( 4000, 200, 5600, 250 ); //Check Point
         this.floors.push( floor13 );
+
+        var floor14 = new Floor( 7700, 150, 8000, 200 );
+        this.floors.push( floor14 );
+
+        var floor15 = new Floor( 7900, 300, 8400, 350 );
+        this.floors.push( floor15 );
+
+        var floor16 = new Floor( 8350, 400, 8400, 450 );
+        this.floors.push( floor16 );
+
+        var floor17 = new Floor( 8650, 400, 8700, 450 );
+        this.floors.push( floor17 );
+
+        var floor18 = new Floor( 8950, 500, 9000, 550 );
+        this.floors.push( floor18 );
+
+        var floor19 = new Floor( 9250, 250, 9500, 300 );
+        this.floors.push( floor19 );
+
+        var floor20 = new Floor( 8800, 150, 9500, 200 );
+        this.floors.push( floor20 );        
+
+
+
+        var floor21 = new Floor( 10200, 180, 10300, 230 ); //Check Point
+        this.floors.push( floor21 );
+
+        var floor22 = new Floor( 10550, 110, 11000, 160 );
+        this.floors.push( floor22 );
+
+        var floor23 = new Floor( 10500, 300, 11000, 350 );
+        this.floors.push( floor23 );
+
+        var floor24 = new Floor( 11100, 250, 11200, 300 );
+        this.floors.push( floor24 );
+
+        var floor25 = new Floor( 11300, 400, 11400, 450 );
+        this.floors.push( floor25 );
+
+        var floor26 = new Floor( 11270, 100, 11400, 150 );
+        this.floors.push( floor26 );
+
+        var floor27 = new Floor( 11600, 200, 12000, 250 );
+        this.floors.push( floor27 );
+
+        var floor28 = new Floor( 12200, 320, 12250, 370 );
+        this.floors.push( floor28 );
+
+        var floor29 = new Floor( 12400, 120, 12450, 170 );
+        this.floors.push( floor29 );
+
+        var floor30 = new Floor( 12600, 220, 14200, 270 );
+        this.floors.push( floor30 );
+
+        var floor31 = new Floor( 12800, 400, 14200, 450 );
+        this.floors.push( floor31 );
+
+
+
+
 
         this.floors.forEach( function( b ) {
             this.addChild( b );
@@ -259,7 +426,10 @@ var GameLayer = cc.LayerColor.extend({
 
     gameOver: function() {
         this.Neko.unscheduleUpdate();
-        this.enermy.unscheduleUpdate();
+
+         this.enermies.forEach( function( b ) {
+            b.scheduleUpdate();
+        }, this );
 
     },
 
@@ -291,18 +461,24 @@ var GameLayer = cc.LayerColor.extend({
 
 
      onKeyDown: function(e){ 
+        
+
         if( e == cc.KEY.enter ) {
             this.STATES = GameLayer.STATES.STARTED;
         }
 
-        if( this.STATES == GameLayer.STATES.STARTED ) { 
+        if( this.STATES == GameLayer.STATES.STARTED ) {
+            if( this.STATES == GameLayer.STATES.END ) {}
             this.Neko.handleKeyDown( e );
             this.bulletHandleKeyDown( e );
         }
     },
 
      onKeyUp: function( e ){
-        this.Neko.handleKeyUp( e );
+        var pos = this.Neko.getPosition();
+        if( this.STATES == GameLayer.STATES.END ){}
+        else 
+            this.Neko.handleKeyUp( e );
     }
 
 });

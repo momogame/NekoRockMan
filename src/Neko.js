@@ -111,7 +111,7 @@ var Neko = cc.Sprite.extend({
             this.x = 0 + 20 ;
         }
         if( this.x > this.endPoint - 20 ) {
-            this.x = this.endPoint - 20;
+            //this.x = this.endPoint - 20;
         }
 
     },
@@ -289,6 +289,7 @@ var Neko = cc.Sprite.extend({
     },
 
     handleKeyUp: function( e ) {
+
         if ( Neko.KEYMAP[ e ] != undefined ) {
             this[ Neko.KEYMAP[ e ] ] = false;
         }
