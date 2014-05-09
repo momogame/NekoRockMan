@@ -3,7 +3,7 @@ var GameLayer = cc.LayerColor.extend({
         this._super( new cc.Color4B( 127, 127, 127, 255 ) );
         this.setPosition( new cc.Point( 0, 0 ) );
 
-        this.startPoint = [ 100, 800 ];
+        this.startPoint = [ 12900, 800 ];
         this.endPoint = [ 13600, 600 ]; //Point x should be multiple of 800
 
         this.checkPoint = [ this.startPoint[0], this.startPoint[1] ];
@@ -32,7 +32,7 @@ var GameLayer = cc.LayerColor.extend({
         this.Neko.scheduleUpdate();
         this.HPbar.scheduleUpdate();
         var pos = this.Neko.getPosition();
-        console.log(pos.x);
+        //console.log(pos.x);
 
         if( pos.x >= 6000 && pos.x < 6010 ) {
             console.log('checkPoint');
@@ -67,7 +67,18 @@ var GameLayer = cc.LayerColor.extend({
             this.logLabel.setPosition( 13450, 350 );
             this.logLabel.setFontFillColor( new cc.Color3B( 255,255,255 ) );
             this.addChild( this.logLabel,52 );
+
+            console.log( this.HPbar.getLife() );
+            if( this.HPbar.getLife() == 5 ) {
+                console.log( this.HPbar.getLife );
+                this.logLabel = cc.LabelTTF.create( 'Neko NEVER DIE !', 'Arial' ,30 );
+                this.logLabel.setAnchorPoint( 1,1 );
+                this.logLabel.setPosition( 13450, 200 );
+                this.logLabel.setFontFillColor( new cc.Color3B( 255,255,255 ) );
+                this.addChild( this.logLabel,52 );
         }
+        }
+
 
 
 
